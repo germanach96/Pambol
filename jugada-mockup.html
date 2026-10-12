@@ -419,7 +419,7 @@ const SURFACES = [
   { id: 'sintetico', name: 'Sintético', kind: 'stripes', base: '#2e8c47', alt: '#2a8141', step: 2, css: 'repeating-linear-gradient(180deg,#2e8c47 0 5px,#2a8141 5px 10px)' },
   { id: 'tierra', name: 'Tierra', kind: 'stripes', base: '#9a5b3c', alt: '#935739', step: 1.5, css: 'repeating-linear-gradient(180deg,#9a5b3c 0 4px,#935739 4px 8px)' },
   { id: 'concreto', name: 'Concreto', kind: 'slabs', base: '#6c7075', step: 5, css: 'linear-gradient(rgba(0,0,0,.25) 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,rgba(0,0,0,.25) 1px,transparent 1px) 0 0/16px 16px,#6c7075' },
-  { id: 'madera', name: 'Madera', kind: 'planks', tones: ['#a06c3b', '#97653a', '#a87444'], css: 'repeating-linear-gradient(90deg,#a06c3b 0 7px,#97653a 7px 14px,#a87444 14px 21px)' },
+  { id: 'madera', name: 'Madera', kind: 'planks', tones: ['#a06c3b', '#9b693a', '#a4703f'], css: 'repeating-linear-gradient(90deg,#a06c3b 0 7px,#97653a 7px 14px,#a87444 14px 21px)' },
   { id: 'pista', name: 'Pista azul', kind: 'court', base: '#2d6299', out: '#1f4570', css: 'linear-gradient(#2d6299,#2d6299) center/62% 58% no-repeat,#1f4570' },
 ];
 const surfById = id => SURFACES.find(x => x.id === id) || SURFACES[0];
@@ -452,6 +452,17 @@ function kitCss(k) {
 const kitVars = k => { const d = dorsalInk(k); return `--kit:${kitCss(k)};--ring:${k.ring};--ink-k:${d.ink};--halo:${d.halo}`; };
 // color de la estela y de las zonas: el más visible de los dos sobre la noche
 const teamGlow = teamId => { const k = kits[teamId]; return lum(k.base) < 0.05 && lum(k.ring) > lum(k.base) ? k.ring : k.base; };
+// equipos que se confunden con la superficie elegida
+function surfaceClash() {
+  const sf = surfById(surface), ground = sf.kind === 'planks' ? sf.tones[0] : sf.base;
+  const d = (a, b) => Math.hypot(...hexRgb(a).map((v, i) => v - hexRgb(b)[i]));
+  return ['mine', 'rival'].filter(t => d(teamGlow(t), ground) < 80 && d(kits[t].ring, ground) < 120);
+}
+function surfaceClashNote() {
+  const c = surfaceClash(); if (!c.length) return '';
+  const who = c.length === 2 ? 'Los dos equipos se confunden' : c[0] === 'mine' ? 'Mi equipo se confunde' : 'El rival se confunde';
+  return `<p class="clash">${who} con ${surfById(surface).name.toLowerCase()}. Cambia el color o la superficie.</p>`;
+}
 function kitsClash() {
   const d = (a, b) => Math.hypot(...hexRgb(a).map((v, i) => v - hexRgb(b)[i]));
   return d(teamGlow('mine'), teamGlow('rival')) < 90;
@@ -1198,7 +1209,7 @@ const icon = k => `<svg class="ico" viewBox="0 0 256 256" aria-hidden="true"><pa
 
 function drawField() {
   const g = $('#field'); g.innerHTML = '';
-  // pasto plano con franjas de corte de 4 m, sin luces ni viñeta
+  // superficie elegida (plana, sin luz), luego las líneas encima
   // esquinas redondeadas, como una tarjeta: el pasto se recorta con el mismo radio
   if (!$('#turfClip')) el('rect', { x: -2, y: -2, width: 24, height: 44, rx: 1.2 }, el('clipPath', { id: 'turfClip' }, $('#pitch defs')));
   drawTurf(true);
@@ -1219,7 +1230,8 @@ function drawField() {
 }
 /* Dibuja la superficie elegida debajo de las líneas; la nueva entra fundiéndose sobre la anterior (240 ms). */
 function drawTurf(fade) {
-  const g = $('#field'), sf = surfById(surface), old = g.querySelector('.turf');
+  // la nueva siempre va encima de la última; al terminar el fundido se retiran todas las anteriores (aunque se toque rápido)
+  const g = $('#field'), sf = surfById(surface), olds = [...g.querySelectorAll('.turf')], old = olds[olds.length - 1];
   const t = el('g', { class: 'turf', 'clip-path': 'url(#turfClip)' });
   g.insertBefore(t, old ? old.nextSibling : g.firstChild);
   const R = (x, y, w, h, fill) => el('rect', { x, y, width: w, height: h, fill }, t);
@@ -1232,13 +1244,15 @@ function drawTurf(fade) {
     if (sf.kind === 'stripes') for (let i = 0, y = -2; y < 42; i++, y += sf.step) if (i % 2) R(-2, y, 24, sf.step, sf.alt);
     if (sf.kind === 'slabs') {
       const J = { stroke: 'rgba(0,0,0,.24)', 'stroke-width': 0.05 };
-      for (let x = 0; x <= 20; x += sf.step) el('line', { x1: x, y1: -2, x2: x, y2: 42, ...J }, t);
-      for (let y = 0; y <= 40; y += sf.step) el('line', { x1: -2, y1: y, x2: 22, y2: y, ...J }, t);
+      // juntas desplazadas medio paño: no coinciden con el eje ni con la línea central
+      for (let x = 2.5; x < 22; x += sf.step) el('line', { x1: x, y1: -2, x2: x, y2: 42, ...J }, t);
+      for (let y = 2.5; y < 42; y += sf.step) el('line', { x1: -2, y1: y, x2: 22, y2: y, ...J }, t);
     }
   }
-  if (fade && !old && reduceMotion.matches) { return; }
-  if (fade) t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: old ? 240 : 260, easing: 'ease' }).onfinish = () => old?.remove();
-  else old?.remove();
+  const clear = () => olds.forEach(o => o.remove());
+  if (fade && !old && reduceMotion.matches) return;
+  if (fade) t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: old ? 240 : 260, easing: 'ease' }).onfinish = clear;   // un fundido, también con movimiento reducido
+  else clear();
 }
 function setSurface(id) {
   surface = surfById(id).id;
@@ -1660,7 +1674,7 @@ function renderSetup() {
   let body;
   if (t === 'cancha') {
     body = `<fieldset class="grp"><legend>Superficie</legend><div class="surfs">${SURFACES.map(sf =>
-      `<button class="surf" data-k="surf-${sf.id}" data-surface="${sf.id}" aria-pressed="${surface === sf.id}"><i style="background:${sf.css}"></i>${sf.name}</button>`).join('')}</div></fieldset>`;
+      `<button class="surf" data-k="surf-${sf.id}" data-surface="${sf.id}" aria-pressed="${surface === sf.id}"><i style="background:${sf.css}"></i>${sf.name}</button>`).join('')}</div></fieldset>${surfaceClashNote()}`;
   } else if (t === 'jugadas') {
     body = `<ul class="plays">${PLAYS.map(pl => `<li><button class="play" data-k="play-${pl.id}" data-play="${pl.id}" aria-pressed="${state.play === pl.id}">
       <b>${pl.name}</b><span>${MODE_LABEL[detectMode(pl.build())]}</span></button></li>`).join('')}</ul>`;
@@ -1672,7 +1686,7 @@ function renderSetup() {
       <fieldset class="grp"><legend>Camiseta</legend><div class="seg styles"><div class="prev">${previewSvg(t)}</div>${STYLES.map(([s, l]) =>
         `<button class="stl" data-k="style-${s}" data-style="${s}" aria-pressed="${k.style === s}"><span class="dot" style="${kitVars({ ...k, style: s })}"></span>${l}</button>`).join('')}</div></fieldset>
       <fieldset class="grp"><legend>Color</legend>${swatches('base', k.base)}</fieldset>
-      ${kitsClash() ? '<p class="clash">Los dos equipos se ven parecidos en la cancha. Cambia el color de uno.</p>' : ''}
+      ${kitsClash() ? '<p class="clash">Los dos equipos se ven parecidos en la cancha. Cambia el color de uno.</p>' : ''}${surfaceClashNote()}
       <fieldset class="grp"><legend>Contorno</legend>${swatches('ring', k.ring)}</fieldset>
       <fieldset class="grp"><legend>Intensidad de ${t === 'mine' ? 'todo mi equipo' : 'todo el rival'}${same ? '' : ', ahora mezclada'}</legend><div class="seg">${[1, 2, 3].map(i =>
         `<button data-k="int-${i}" data-int="${i}" aria-pressed="${same === i}">${i}<small>${CONFIG.intensity[i].label.toLowerCase()}</small></button>`).join('')}</div></fieldset>`;

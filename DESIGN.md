@@ -21,13 +21,13 @@ Documentado a partir de `jugada-mockup.html`. Dirección: **fut 5 de noche, como
 | `--line` | `rgba(84,84,88,.6)` | Separadores finos (0,5 px) dentro de la hoja y la lista |
 | `--ink` / `-2` / `-3` | `#f5f5f7` / `rgba(235,235,245,.7)` / `rgba(235,235,245,.56)` | Etiquetas de iOS: principal, secundaria, terciaria |
 | `--cone` / `--cone-2` / `--cone-ink` | `#ff9f0a` / `#ffb340` / `#1f1300` | **Único acento**, el naranja del sistema: lo que tú haces (huellas, cono, aro de "tú", Animar, selección, foco). La etiqueta "tú" va en blanco con halo oscuro para leerse sobre el pasto |
-| `--miss` | `#ff453a` | Solo "Evita" y el aviso de equipos parecidos |
+| `--miss` | `#ff453a` | Solo "Evita" y los avisos de choque: equipos parecidos entre sí, o un equipo que se confunde con la superficie (sale en su pestaña y en Cancha) |
 | `--mine` / `--rival` | por defecto `#d8263b` / `#5cb8ec` | Registrados con `@property` (`<color>`) y con transición de 500 ms. Se recalculan desde la equipación. Pintan el fondo, las zonas y las colas |
 | `--material` | `blur(30px) saturate(180%)` | Material de la hoja, el aviso y los toasts |
 | Paleta de equipaciones (`COLORS`, 10) | blanco `#f3efe6`, negro `#1c1f22`, rojo `#d8263b`, granate `#7d1d2f`, rosa `#ec6fa6`, naranja `#f07a1a`, amarillo `#f2c94c`, verde `#1f8a4c`, celeste `#5cb8ec`, azul `#1f3f8f` | Base y contorno de cada equipo. Por defecto: mío rayas rojo/blanco, rival liso celeste con contorno azul |
 | Porteros | `#6d4dff` (míos), `#c6ef3f` (rivales) | Siempre lisos, con el contorno de su equipo |
 | Dorsal | `#ffffff` o `#10171a` | El que mejor contraste con el peor color bajo el número; halo del tono contrario, más grueso cuanto peor el contraste (0,06 / 0,11 / 0,16) |
-| Superficies (`SURFACES`) | césped franjas de 4 m `#2a743b` / `#276d37` (por defecto); sintético franjas de 2 m `#2e8c47` / `#2a8141`; tierra franjas de 1,5 m `#9a5b3c` / `#935739`; concreto `#6c7075` con juntas cada 5 m `rgba(0,0,0,.24)`; madera tablones de 0,5 m en `#a06c3b` / `#97653a` / `#a87444` con juntas `rgba(40,20,5,.14)`; pista azul `#2d6299` con borde `#1f4570` | SVG plano, recortado con `turfClip` (rx 1,2 m). Las líneas siguen blancas en todas: `rgba(246,248,240,.8)` de 0,12 m |
+| Superficies (`SURFACES`) | césped franjas de 4 m `#2a743b` / `#276d37` (por defecto); sintético franjas de 2 m `#2e8c47` / `#2a8141`; tierra franjas de 1,5 m `#9a5b3c` / `#935739`; concreto `#6c7075` con juntas cada 5 m `rgba(0,0,0,.24)`, desplazadas medio paño para no caer sobre el eje ni la línea central; madera tablones de 0,5 m en `#a06c3b` / `#9b693a` / `#a4703f` con juntas `rgba(40,20,5,.14)`; pista azul `#2d6299` con borde `#1f4570` | SVG plano, recortado con `turfClip` (rx 1,2 m). Las líneas siguen blancas en todas: `rgba(246,248,240,.8)` de 0,12 m |
 
 Radios: controles 12 px (`--r-ctl`), pista del segmentado 11 px y su pastilla 9 px, hoja 28 px (`--r-sheet`; 24 px flotando en escritorio), aviso, toasts y botón de cabecera 999 px, camisetas y muestras de color en círculo, muestras de superficie 12 px con vista de 7 px, cancha 1,2 m.
 
