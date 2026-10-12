@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-12T23:59:00Z",
+  "generatedAt": "2026-10-12T23:59:30Z",
   "title": "Pambol: diseño visual",
   "extensions": {
     "colorMeta": {
@@ -49,11 +49,21 @@
       },
       "turf": {
         "role": "neutral",
-        "displayName": "Pasto en franjas",
+        "displayName": "Superficies de la cancha",
         "canonical": "#2a743b",
         "tonalRamp": [
+          "#1f4570",
+          "#2d6299",
+          "#6c7075",
+          "#97653a",
+          "#a06c3b",
+          "#a87444",
+          "#935739",
+          "#9a5b3c",
           "#276d37",
-          "#2a743b"
+          "#2a743b",
+          "#2a8141",
+          "#2e8c47"
         ]
       },
       "kit-palette": {
@@ -66,6 +76,8 @@
           "#1f3f8f",
           "#1f8a4c",
           "#d8263b",
+          "#f07a1a",
+          "#ec6fa6",
           "#5cb8ec",
           "#f2c94c",
           "#f3efe6"
@@ -149,6 +161,11 @@
         "purpose": "El fondo cambia de tinte al cambiar una equipación."
       },
       {
+        "name": "surface-fade",
+        "value": "240ms ease (260 ms en la entrada)",
+        "purpose": "La superficie nueva entra fundiéndose sobre la anterior; la elección se guarda en localStorage (pambol.surface)."
+      },
+      {
         "name": "ease-out",
         "value": "cubic-bezier(0.23,1,0.32,1)",
         "purpose": "Estados, levantar ficha, fundidos."
@@ -206,8 +223,8 @@
       "name": "Control segmentado",
       "kind": "chip",
       "refersTo": "segmented",
-      "description": "Pestañas del panel, estilo de camiseta e intensidad: pista gris y pastilla elevada.",
-      "html": "<div class=\"ds-seg\"><button aria-pressed=\"true\">Jugadas</button><button aria-pressed=\"false\">Mi equipo</button><button aria-pressed=\"false\">Rival</button></div>",
+      "description": "Pestañas de Ajustes (solo texto: Jugadas, Mi equipo, Rival, Cancha), estilo de camiseta e intensidad: pista gris y pastilla elevada.",
+      "html": "<div class=\"ds-seg\"><button aria-pressed=\"true\">Jugadas</button><button aria-pressed=\"false\">Mi equipo</button><button aria-pressed=\"false\">Rival</button><button aria-pressed=\"false\">Cancha</button></div>",
       "css": ".ds-seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0,1fr); gap: 2px; padding: 2px; border-radius: 11px; background: rgba(118,118,128,.24); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; } .ds-seg button { height: 34px; border: 0; border-radius: 9px; background: none; font-size: 14px; font-weight: 500; color: #f5f5f7; transition: background-color 200ms ease, box-shadow 200ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-seg button:not([aria-pressed=true]):hover { background: rgba(118,118,128,.18); } .ds-seg button:active { transform: scale(.96); } .ds-seg button[aria-pressed=true] { background: #5b5b60; font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.12), 0 3px 1px rgba(0,0,0,.04); } .ds-seg button:focus-visible { outline: 2px solid #ff9f0a; outline-offset: 2px; }"
     },
     {
@@ -230,18 +247,27 @@
       "name": "Muestra de color",
       "kind": "chip",
       "refersTo": "swatch",
-      "description": "Una de las 8 muestras de base o contorno.",
+      "description": "Una de las 10 muestras de base o contorno, en rejilla de 5 × 2.",
       "html": "<button class=\"ds-sw\" aria-pressed=\"true\"><i style=\"background:#5cb8ec\"></i></button>",
-      "css": ".ds-sw { width: 38px; height: 38px; border: 0; background: none; border-radius: 50%; display: grid; place-items: center; transition: transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-sw i { width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 .5px rgba(255,255,255,.2); transition: box-shadow 160ms ease; } .ds-sw:hover { transform: scale(1.06); } .ds-sw:active { transform: scale(.92); } .ds-sw[aria-pressed=true] i { box-shadow: 0 0 0 2.5px #1e1e20, 0 0 0 4.5px #f5f5f7; }"
+      "css": ".ds-sw { width: 44px; height: 44px; border: 0; background: none; border-radius: 50%; display: grid; place-items: center; transition: transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-sw i { width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 .5px rgba(255,255,255,.2); transition: box-shadow 160ms ease; } .ds-sw:hover { transform: scale(1.06); } .ds-sw:active { transform: scale(.92); } .ds-sw[aria-pressed=true] i { box-shadow: 0 0 0 2.5px #1e1e20, 0 0 0 4.5px #f5f5f7; }"
+    },
+    {
+      "name": "Muestra de superficie",
+      "kind": "chip",
+      "refersTo": "surface",
+      "description": "Una de las seis superficies de la pestaña Cancha, en rejilla de 3 × 2.",
+      "html": "<button class=\"ds-surf\" aria-pressed=\"true\"><i style=\"background:repeating-linear-gradient(180deg,#2a743b 0 10px,#276d37 10px 20px)\"></i>Césped</button>",
+      "css": ".ds-surf { width: 112px; display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 6px 6px 9px; border: 0; border-radius: 12px; background: rgba(118,118,128,.24); font: 500 13px/1.2 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; color: #f5f5f7; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), box-shadow 160ms ease; } .ds-surf i { height: 46px; border-radius: 7px; box-shadow: inset 0 0 0 .5px rgba(255,255,255,.18); } .ds-surf:active { transform: scale(.97); } .ds-surf[aria-pressed=true] { box-shadow: inset 0 0 0 2px #f5f5f7; font-weight: 600; } .ds-surf:focus-visible { outline: 2px solid #ff9f0a; outline-offset: 2px; }"
     }
   ],
   "narrative": {
     "northStar": "Fut 5 de noche, como app de Apple",
-    "overview": "Una cancha sintética plana, sin luz simulada, presentada como una tarjeta de esquinas redondeadas sobre una noche que se tiñe con los colores de los dos equipos. Alrededor, el lenguaje de iOS en modo oscuro: tipografía del sistema, materiales translúcidos, controles segmentados y listas agrupadas. La app no se disfraza de herramienta: la cancha es la interfaz.",
+    "overview": "Una cancha plana, sin luz simulada y de superficie elegible, presentada como una tarjeta de esquinas redondeadas sobre una noche que se tiñe con los colores de los dos equipos. Alrededor, el lenguaje de iOS en modo oscuro: tipografía del sistema, materiales translúcidos, controles segmentados y listas agrupadas. La app no se disfraza de herramienta: la cancha es la interfaz.",
     "keyCharacteristics": [
       "Huellas de tachones y cono",
       "Colas de cometa en la repetición",
       "Equipaciones configurables por equipo",
+      "Seis superficies planas: césped, sintético, tierra, concreto, madera y pista azul",
       "Fondo teñido por los colores de los dos equipos",
       "Flechas ligeras: el largo es la velocidad",
       "Un solo acento: naranja del sistema"
