@@ -11,14 +11,14 @@ Mode: operate. Audience/job: the owner studies a 5v5 off-ball situation; drags p
 
 ## Direction contract
 
-THESIS: The pitch is a broadcast replay frozen for analysis; the app is the analyst's telestrator. Refuses the category default of a flat green board with a toolbar of mode buttons: everything is touched directly on the pitch.
+THESIS: The pitch is a real night fut 5 pitch under four floodlights; the interface is the pitch itself. Refuses the flat green board with circles and a dark dashboard around it.
 
-OWN-WORLD: Near-black studio blue chrome (#0b1016 family) framing a saturated, mown-stripe pitch that is the only bright area. Broadcast lower-third type: Barlow Condensed uppercase, tight, tabular numbers. Gold = my recommendation, pink = avoid, white = arrows, cyan-tinted rival, team-red mine. Thin hairline score-bug panels with a colored tab edge.
+OWN-WORLD: Night with cage mesh around a generated synthetic-turf canvas lit from four corners. Kit tokens (red-white stripes vs sky blue) casting four lamp shadows. One accent, training-cone orange, for everything that is "what you do". Sentence-case Barlow; Barlow Condensed italic for the wordmark and big figures.
 
-STORY: The user sees who has the ball, sees their gold "ponte aquí" and why, nudges a player, watches the answer move, presses Animar and sees the play unfold.
+STORY: The user sees who has the ball, sees cleat prints leading to a cone where to stand, nudges a player (it lifts, shadows stretch), watches the answer move, presses Animar and sees the play as a long-exposure photograph.
 
-FIRST VIEWPORT: Mobile 390 wide: score-bug header (PAMBOL · scenario · mode chip), "Tú" dorsal selector row, pitch filling the width (40×20 m portrait), lower-third result card below with title, Regla/Cálculo tag, one-line reason, 3 stats, and the primary Animar button. Desktop: pitch left, lower-third card as a right column.
+FIRST VIEWPORT: Mobile 390: top bar (pambol, kit selector), full-width pitch, bottom sheet peek (mode, title, one big figure, Animar + 3 icon buttons). Desktop: pitch left, floating sheet right.
 
-FORM: Telestrator de transmisión, position 1 of my ordered list (user's pick over assigned #6 rótulo de canchita). seed: none (unavailable). Signature move: recommendations draw themselves on like a commentator's pen stroke (stroke-dashoffset), with a pulsing landing ring; on recompute the old stroke retracts and the new one draws.
+FORM: Fut 5 de noche, redirected by the user after the telestrator build was judged generic. seed: none (unavailable). Signature moves: lamp shadows, cleat prints + cone, long-exposure replay, brush-wedge arrows.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
