@@ -139,8 +139,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
 .sethead .txt{margin-left:auto;height:34px;padding:0 14px;border-radius:999px;color:var(--cone-2)}
 /* control segmentado al estilo iOS: pista gris y una pastilla elevada para lo elegido */
 .tabs,.seg{display:grid;gap:2px;padding:2px;border-radius:11px;background:var(--sheet-2)}
-.tabs{grid-template-columns:repeat(3,1fr);margin-bottom:18px}
+.tabs{grid-template-columns:repeat(4,1fr);margin-bottom:18px}
 .seg{grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+.tab{white-space:nowrap}
 .tab,.seg button{height:34px;border-radius:9px;font-size:14px;font-weight:500;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:7px;
   transition:background-color 200ms ease,box-shadow 200ms ease,transform 160ms var(--ease-out)}
 .seg button{height:40px}
@@ -158,16 +159,24 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
 .grp{margin:0 0 18px;padding:0;border:0;min-width:0}
 .grp legend{padding:0 0 0 4px;margin:0 0 7px;font-size:13px;font-weight:500;color:var(--ink-2)}
 .seg button small{font-size:12px;font-weight:400;color:var(--ink-2)}
-.kitrow{display:flex;align-items:center;gap:14px}
+/* camiseta: vista previa + 7 estilos en una rejilla de 4 x 2 */
+.seg.styles{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}
+.styles .prev{display:grid;place-items:center}
+.styles .prev svg{width:44px;height:44px;overflow:visible}
 .seg button.stl{flex-direction:column;gap:4px;height:56px;font-size:12px}
 .stl .dot{width:20px;height:20px}
-.kitrow .seg{flex:1}
-.kitrow svg{width:56px;height:56px;flex:none;overflow:visible}
-.sws{display:grid;grid-template-columns:repeat(8,minmax(0,38px));justify-content:space-between;gap:2px}
-.sw{width:100%;max-width:38px;height:38px;border-radius:50%;display:grid;place-items:center;transition:transform 160ms var(--ease-out)}
+/* 10 colores en 5 x 2: cada muestra conserva un blanco de toque cómodo */
+.sws{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px 0;justify-items:center}
+.sw{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;transition:transform 160ms var(--ease-out)}
 .sw i{width:28px;height:28px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2);transition:box-shadow 160ms ease}
 .sw:active{transform:scale(.92)}
 .sw[aria-pressed="true"] i{box-shadow:0 0 0 2.5px var(--sheet-solid),0 0 0 4.5px var(--ink)}
+.surfs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.surf{display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:6px 6px 9px;border-radius:var(--r-ctl);background:var(--sheet-2);
+  font-size:13px;font-weight:500;color:var(--ink);transition:transform 160ms var(--ease-out),box-shadow 160ms ease}
+.surf i{height:46px;border-radius:7px;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18)}
+.surf:active{transform:scale(.97)}
+.surf[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink);font-weight:600}
 .clash{margin:-8px 0 18px;padding-left:4px;font-size:13px;color:var(--ink);display:flex;gap:8px;align-items:baseline}
 .clash::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--miss);transform:translateY(-1px)}
 @media (hover:hover) and (pointer:fine){
@@ -388,14 +397,34 @@ const buildPlay = id => ({ ...playById(id).build(), play: playById(id).id });
 
 /* Equipaciones: color base, contorno (también el segundo color de rayas, bandas y mitades) y estilo. */
 const COLORS = [
-  ['blanco', '#f3efe6'], ['negro', '#1c1f22'], ['rojo', '#d8263b'], ['granate', '#7d1d2f'],
-  ['celeste', '#5cb8ec'], ['azul', '#1f3f8f'], ['amarillo', '#f2c94c'], ['verde', '#1f8a4c'],
+  ['blanco', '#f3efe6'], ['negro', '#1c1f22'], ['rojo', '#d8263b'], ['granate', '#7d1d2f'], ['rosa', '#ec6fa6'],
+  ['naranja', '#f07a1a'], ['amarillo', '#f2c94c'], ['verde', '#1f8a4c'], ['celeste', '#5cb8ec'], ['azul', '#1f3f8f'],
 ];
-const STYLES = [['lisa', 'Lisa'], ['rayas', 'Rayas'], ['bandas', 'Bandas'], ['mitades', 'Mitades']];
+const STYLES = [['lisa', 'Lisa'], ['rayas', 'Rayas'], ['bandas', 'Bandas'], ['mitades', 'Mitades'], ['v', 'V'], ['franja', 'Franja'], ['cruzada', 'Cruzada']];
+/* Dibujos de una sola pieza en el cuadrado -1..1 de la ficha (se recortan al círculo):
+   V de Vélez o Veracruz, franja horizontal de Boca, banda cruzada de River. */
+const SHAPES = {
+  v: 'M-1 -0.95 L0 0.05 L1 -0.95 L1 -0.55 L0 0.45 L-1 -0.55 Z',
+  franja: 'M-1 -0.18 H1 V0.18 H-1 Z',
+  cruzada: 'M-1 -0.6 L-0.6 -1 L1 0.6 L0.6 1 Z',
+};
 const KIT_DEFAULT = { mine: { base: '#d8263b', ring: '#f3efe6', style: 'rayas' }, rival: { base: '#5cb8ec', ring: '#1f3f8f', style: 'lisa' } };
 const GK_COLOR = { mine: '#6d4dff', rival: '#c6ef3f' };
 let kits = clone(KIT_DEFAULT);
 try { const k = JSON.parse(localStorage.getItem('pambol.kits')); if (k && k.mine && k.rival) kits = k; } catch (e) { /* sin almacenamiento */ }
+
+/* Superficie de la cancha: planas, sin luz, cada una con su textura real. css = muestra en el panel. */
+const SURFACES = [
+  { id: 'cesped', name: 'Césped', kind: 'stripes', base: '#2a743b', alt: '#276d37', step: 4, css: 'repeating-linear-gradient(180deg,#2a743b 0 10px,#276d37 10px 20px)' },
+  { id: 'sintetico', name: 'Sintético', kind: 'stripes', base: '#2e8c47', alt: '#2a8141', step: 2, css: 'repeating-linear-gradient(180deg,#2e8c47 0 5px,#2a8141 5px 10px)' },
+  { id: 'tierra', name: 'Tierra', kind: 'stripes', base: '#9a5b3c', alt: '#935739', step: 1.5, css: 'repeating-linear-gradient(180deg,#9a5b3c 0 4px,#935739 4px 8px)' },
+  { id: 'concreto', name: 'Concreto', kind: 'slabs', base: '#6c7075', step: 5, css: 'linear-gradient(rgba(0,0,0,.25) 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,rgba(0,0,0,.25) 1px,transparent 1px) 0 0/16px 16px,#6c7075' },
+  { id: 'madera', name: 'Madera', kind: 'planks', tones: ['#a06c3b', '#97653a', '#a87444'], css: 'repeating-linear-gradient(90deg,#a06c3b 0 7px,#97653a 7px 14px,#a87444 14px 21px)' },
+  { id: 'pista', name: 'Pista azul', kind: 'court', base: '#2d6299', out: '#1f4570', css: 'linear-gradient(#2d6299,#2d6299) center/62% 58% no-repeat,#1f4570' },
+];
+const surfById = id => SURFACES.find(x => x.id === id) || SURFACES[0];
+let surface = 'cesped';
+try { surface = surfById(localStorage.getItem('pambol.surface')).id; } catch (e) { /* sin almacenamiento */ }
 
 const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 function lum(h) { const c = hexRgb(h).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
@@ -417,7 +446,8 @@ function kitCss(k) {
   // franjas de 1/6 del ancho con el centro en el color base, como en las fichas
   const bars = deg => `linear-gradient(${deg}deg,${b} 0 8.33%,${a} 8.33% 25%,${b} 25% 41.67%,${a} 41.67% 58.33%,${b} 58.33% 75%,${a} 75% 91.67%,${b} 91.67%)`;
   return k.style === 'rayas' ? bars(90) : k.style === 'bandas' ? bars(180)
-    : k.style === 'mitades' ? `linear-gradient(90deg,${a} 50%,${b} 50%)` : a;
+    : k.style === 'mitades' ? `linear-gradient(90deg,${a} 50%,${b} 50%)`
+    : SHAPES[k.style] ? `url('data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -1 2 2' preserveAspectRatio='none'><rect x='-1' y='-1' width='2' height='2' fill='${a}'/><path d='${SHAPES[k.style]}' fill='${b}'/></svg>`).replace(/'/g, '%27')}') center/100% 100%` : a;
 }
 const kitVars = k => { const d = dorsalInk(k); return `--kit:${kitCss(k)};--ring:${k.ring};--ink-k:${d.ink};--halo:${d.halo}`; };
 // color de la estela y de las zonas: el más visible de los dos sobre la noche
@@ -1171,10 +1201,7 @@ function drawField() {
   // pasto plano con franjas de corte de 4 m, sin luces ni viñeta
   // esquinas redondeadas, como una tarjeta: el pasto se recorta con el mismo radio
   if (!$('#turfClip')) el('rect', { x: -2, y: -2, width: 24, height: 44, rx: 1.2 }, el('clipPath', { id: 'turfClip' }, $('#pitch defs')));
-  const turf = el('g', { 'clip-path': 'url(#turfClip)' }, g);
-  el('rect', { x: -2, y: -2, width: 24, height: 44, fill: '#2a743b' }, turf);
-  for (let i = 0; i < 11; i++) if (i % 2) el('rect', { x: -2, y: -2 + i * 4, width: 24, height: 4, fill: '#276d37' }, turf);
-  if (!reduceMotion.matches) turf.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: 'ease' });
+  drawTurf(true);
   const L = { fill: 'none', stroke: 'rgba(246,248,240,.8)', 'stroke-width': 0.12, 'stroke-linecap': 'round' };
   el('rect', { x: 0, y: 0, width: 20, height: 40, ...L }, g);
   el('line', { x1: 0, y1: 20, x2: 20, y2: 20, ...L }, g);
@@ -1189,6 +1216,34 @@ function drawField() {
   }
   // en la repetición la cancha se atenúa para que las estelas se lean
   el('rect', { id: 'dim', x: -2, y: -2, width: 24, height: 44, rx: 1.2, fill: '#020806', opacity: 0, 'pointer-events': 'none' }, g);
+}
+/* Dibuja la superficie elegida debajo de las líneas; la nueva entra fundiéndose sobre la anterior (240 ms). */
+function drawTurf(fade) {
+  const g = $('#field'), sf = surfById(surface), old = g.querySelector('.turf');
+  const t = el('g', { class: 'turf', 'clip-path': 'url(#turfClip)' });
+  g.insertBefore(t, old ? old.nextSibling : g.firstChild);
+  const R = (x, y, w, h, fill) => el('rect', { x, y, width: w, height: h, fill }, t);
+  if (sf.kind === 'court') { R(-2, -2, 24, 44, sf.out); R(0, 0, 20, 40, sf.base); }
+  else if (sf.kind === 'planks') {
+    for (let i = 0, x = -2; x < 22; i++, x += 0.5) R(x, -2, 0.5, 44, sf.tones[i % 3]);
+    for (let x = -1.5; x < 22; x += 0.5) el('line', { x1: x, y1: -2, x2: x, y2: 42, stroke: 'rgba(40,20,5,.14)', 'stroke-width': 0.02 }, t);
+  } else {
+    R(-2, -2, 24, 44, sf.base);
+    if (sf.kind === 'stripes') for (let i = 0, y = -2; y < 42; i++, y += sf.step) if (i % 2) R(-2, y, 24, sf.step, sf.alt);
+    if (sf.kind === 'slabs') {
+      const J = { stroke: 'rgba(0,0,0,.24)', 'stroke-width': 0.05 };
+      for (let x = 0; x <= 20; x += sf.step) el('line', { x1: x, y1: -2, x2: x, y2: 42, ...J }, t);
+      for (let y = 0; y <= 40; y += sf.step) el('line', { x1: -2, y1: y, x2: 22, y2: y, ...J }, t);
+    }
+  }
+  if (fade && !old && reduceMotion.matches) { return; }
+  if (fade) t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: old ? 240 : 260, easing: 'ease' }).onfinish = () => old?.remove();
+  else old?.remove();
+}
+function setSurface(id) {
+  surface = surfById(id).id;
+  try { localStorage.setItem('pambol.surface', surface); } catch (e) { /* sin almacenamiento */ }
+  drawTurf(true);
 }
 function setDim(on) {
   const d = $('#dim'); if (!d) return;
@@ -1206,6 +1261,7 @@ function paintKit(g, teamId, gk, number) {
   if (k.style === 'rayas') for (let j = 0; j < 4; j++) el('rect', { x: -0.98 + j * 0.56, y: -1, width: 0.28, height: 2, fill: k.ring }, cloth);
   if (k.style === 'bandas') for (let j = 0; j < 4; j++) el('rect', { x: -1, y: -0.98 + j * 0.56, width: 2, height: 0.28, fill: k.ring }, cloth);
   if (k.style === 'mitades') el('rect', { x: 0, y: -1, width: 1, height: 2, fill: k.ring }, cloth);
+  if (SHAPES[k.style]) el('path', { d: SHAPES[k.style], fill: k.ring }, cloth);
   el('circle', { r: 0.76, fill: 'none', stroke: k.ring, 'stroke-width': 0.16 }, g);
   el('circle', { r: 0.855, fill: 'none', stroke: 'rgba(0,0,0,.5)', 'stroke-width': 0.045 }, g);
   const t = el('text', { class: 'n', y: 0.03 }, g);
@@ -1329,8 +1385,8 @@ function footprints(g, from, to, animate) {
     const fp = el('g', { transform: `translate(${c.x.toFixed(3)} ${SY(c.y).toFixed(3)}) rotate(${ang.toFixed(1)})` }, g);
     const inner = el('g', { class: animate ? 'step' : '' }, fp);
     if (animate) inner.style.animationDelay = (k * 45) + 'ms';
-    el('ellipse', { cx: 0, cy: -0.08, rx: 0.17, ry: 0.27, fill: 'var(--cone)', opacity: 0.92 }, inner);
-    el('ellipse', { cx: 0, cy: 0.3, rx: 0.13, ry: 0.11, fill: 'var(--cone)', opacity: 0.92 }, inner);
+    el('ellipse', { cx: 0, cy: -0.08, rx: 0.17, ry: 0.27, fill: 'var(--cone)', stroke: 'rgba(20,10,0,.45)', 'stroke-width': 0.04, opacity: 0.95 }, inner);
+    el('ellipse', { cx: 0, cy: 0.3, rx: 0.13, ry: 0.11, fill: 'var(--cone)', stroke: 'rgba(20,10,0,.45)', 'stroke-width': 0.04, opacity: 0.95 }, inner);
   }
   return k;
 }
@@ -1465,7 +1521,7 @@ function renderSheet() {
       <button class="sq" id="bZones" aria-pressed="${showZones}" aria-label="Ver zonas" title="Ver zonas">${icon('zones')}</button>
       <button class="sq" id="bUndo" ${history.length ? '' : 'disabled'} aria-label="Deshacer" title="Deshacer">${icon('undo')}</button>
       <button class="sq" id="bReset" aria-label="Volver al escenario" title="Volver a: ${playById(state.play).name}">${icon('reset')}</button>
-      <button class="sq" id="bSetup" aria-label="Jugadas y equipos" title="Jugadas y equipos">${icon('sliders')}</button>
+      <button class="sq" id="bSetup" aria-label="Ajustes: jugadas, equipos y cancha" title="Ajustes: jugadas, equipos y cancha">${icon('sliders')}</button>
     </div>
     <button class="morebtn" id="bMore" aria-expanded="${sheetOpen}">${icon('caret')}${sheetOpen ? 'Menos' : 'Por qué'}</button>
     <div class="more"><div>
@@ -1602,7 +1658,10 @@ function renderSetup() {
   c.setAttribute('aria-live', 'off');   // el panel se reescribe en cada toque: no se vuelve a anunciar entero
   const t = setupTab;
   let body;
-  if (t === 'jugadas') {
+  if (t === 'cancha') {
+    body = `<fieldset class="grp"><legend>Superficie</legend><div class="surfs">${SURFACES.map(sf =>
+      `<button class="surf" data-k="surf-${sf.id}" data-surface="${sf.id}" aria-pressed="${surface === sf.id}"><i style="background:${sf.css}"></i>${sf.name}</button>`).join('')}</div></fieldset>`;
+  } else if (t === 'jugadas') {
     body = `<ul class="plays">${PLAYS.map(pl => `<li><button class="play" data-k="play-${pl.id}" data-play="${pl.id}" aria-pressed="${state.play === pl.id}">
       <b>${pl.name}</b><span>${MODE_LABEL[detectMode(pl.build())]}</span></button></li>`).join('')}</ul>`;
   } else {
@@ -1610,8 +1669,8 @@ function renderSetup() {
     const swatches = (field, cur) => `<div class="sws">${COLORS.map(([n, h]) =>
       `<button class="sw" data-k="${field}-${n}" data-${field}="${h}" aria-pressed="${cur === h}" aria-label="${cap(n)}" title="${cap(n)}"><i style="--c:${h}"></i></button>`).join('')}</div>`;
     body = `
-      <fieldset class="grp"><legend>Camiseta</legend><div class="kitrow">${previewSvg(t)}<div class="seg">${STYLES.map(([s, l]) =>
-        `<button class="stl" data-k="style-${s}" data-style="${s}" aria-pressed="${k.style === s}"><span class="dot" style="${kitVars({ ...k, style: s })}"></span>${l}</button>`).join('')}</div></div></fieldset>
+      <fieldset class="grp"><legend>Camiseta</legend><div class="seg styles"><div class="prev">${previewSvg(t)}</div>${STYLES.map(([s, l]) =>
+        `<button class="stl" data-k="style-${s}" data-style="${s}" aria-pressed="${k.style === s}"><span class="dot" style="${kitVars({ ...k, style: s })}"></span>${l}</button>`).join('')}</div></fieldset>
       <fieldset class="grp"><legend>Color</legend>${swatches('base', k.base)}</fieldset>
       ${kitsClash() ? '<p class="clash">Los dos equipos se ven parecidos en la cancha. Cambia el color de uno.</p>' : ''}
       <fieldset class="grp"><legend>Contorno</legend>${swatches('ring', k.ring)}</fieldset>
@@ -1619,16 +1678,16 @@ function renderSetup() {
         `<button data-k="int-${i}" data-int="${i}" aria-pressed="${same === i}">${i}<small>${CONFIG.intensity[i].label.toLowerCase()}</small></button>`).join('')}</div></fieldset>`;
   }
   c.innerHTML = `
-    <button class="grab" id="bGrab" aria-label="Cerrar jugadas y equipos"></button>
-    <div class="sethead"><h2 class="title">Jugadas y equipos</h2><button class="txt" id="bDone" data-k="done">Listo</button></div>
-    <div class="tabs" role="tablist">${[['jugadas', 'Jugadas'], ['mine', 'Mi equipo'], ['rival', 'Rival']].map(([id, l]) =>
-      `<button class="tab" role="tab" id="tab-${id}" aria-controls="setPanel" tabindex="${t === id ? 0 : -1}" data-k="tab-${id}" data-tab="${id}" aria-selected="${t === id}">${id === 'jugadas' ? '' : `<span class="dot" style="${kitVars(kits[id])}"></span>`}${l}</button>`).join('')}</div>
+    <button class="grab" id="bGrab" aria-label="Cerrar ajustes"></button>
+    <div class="sethead"><h2 class="title">Ajustes</h2><button class="txt" id="bDone" data-k="done">Listo</button></div>
+    <div class="tabs" role="tablist">${[['jugadas', 'Jugadas'], ['mine', 'Mi equipo'], ['rival', 'Rival'], ['cancha', 'Cancha']].map(([id, l]) =>
+      `<button class="tab" role="tab" id="tab-${id}" aria-controls="setPanel" tabindex="${t === id ? 0 : -1}" data-k="tab-${id}" data-tab="${id}" aria-selected="${t === id}">${l}</button>`).join('')}</div>
     <div role="tabpanel" id="setPanel" aria-labelledby="tab-${t}">${body}</div>`;
   if (focusKey) c.querySelector(`[data-k="${focusKey}"]`)?.focus();
   // pestañas con flechas, Inicio y Fin (patrón ARIA de pestañas, activación automática)
   c.onkeydown = e => {
     if (!e.target.matches('.tab')) return;
-    const ids = ['jugadas', 'mine', 'rival'], i = ids.indexOf(setupTab);
+    const ids = ['jugadas', 'mine', 'rival', 'cancha'], i = ids.indexOf(setupTab);
     const j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: ids.length - 1 }[e.key];
     if (j === undefined) return;
     e.preventDefault();
@@ -1641,6 +1700,7 @@ function renderSetup() {
     if (b.id === 'bDone' || b.id === 'bGrab') closeSetup();
     else if (d.play) { swapSheet(() => { sheetView = 'result'; goToPlay(d.play); renderSheet(); }); }
     else if (d.tab) { setupTab = d.tab; renderSetup(); }
+    else if (d.surface) { setSurface(d.surface); renderSetup(); }
     else if (d.style || d.base || d.ring) {
       const k = kits[t];
       if (d.style) k.style = d.style; if (d.base) k.base = d.base; if (d.ring) k.ring = d.ring;
