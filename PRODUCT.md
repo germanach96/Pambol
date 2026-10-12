@@ -50,7 +50,7 @@ Open: the definitive rule list (current list is provisional).
 
 - Name **Pambol** in header and `<title>`.
 - Recommended play in **gold**, dashed; alternative in light grey; play to avoid in **pink** with ✕ and interception zone. "Tú" marked with a gold ring. Direction arrows in white. Mown-stripe grass.
-- Barlow / Barlow Condensed with `system-ui` fallback.
+- System font stack (SF Pro / SF Pro Rounded on Apple devices, `system-ui` elsewhere); no web fonts, so it works offline. Apple-style dark UI with translucent materials and a background tinted by both team colours (user request, 2026-10-12).
 - All UI copy in Spanish.
 
 ## Evidence on Hand
