@@ -20,7 +20,7 @@ Documentado a partir de `jugada-mockup.html`. Dirección: **fut 5 de noche, como
 | `--thumb` | `#5b5b60` | Pastilla elevada del control segmentado |
 | `--line` | `rgba(84,84,88,.6)` | Separadores finos (0,5 px) dentro de la hoja y la lista |
 | `--ink` / `-2` / `-3` | `#f5f5f7` / `rgba(235,235,245,.7)` / `rgba(235,235,245,.56)` | Etiquetas de iOS: principal, secundaria, terciaria |
-| `--cone` / `--cone-2` / `--cone-ink` | `#ff9f0a` / `#ffb340` / `#1f1300` | **Único acento**, el naranja del sistema: lo que tú haces (huellas, cono, "tú", Animar, selección, foco) |
+| `--cone` / `--cone-2` / `--cone-ink` | `#ff9f0a` / `#ffb340` / `#1f1300` | **Único acento**, el naranja del sistema: lo que tú haces (huellas, cono, aro de "tú", Animar, selección, foco). La etiqueta "tú" va en blanco con halo oscuro para leerse sobre el pasto |
 | `--miss` | `#ff453a` | Solo "Evita" y el aviso de equipos parecidos |
 | `--mine` / `--rival` | por defecto `#d8263b` / `#5cb8ec` | Registrados con `@property` (`<color>`) y con transición de 500 ms. Se recalculan desde la equipación. Pintan el fondo, las zonas y las colas |
 | `--material` | `blur(30px) saturate(180%)` | Material de la hoja, el aviso y los toasts |
@@ -33,7 +33,9 @@ Radios: controles 12 px (`--r-ctl`), pista del segmentado 11 px y su pastilla 9 
 
 ## Fondo
 
-`--night` con tres capas. Móvil: radial de `--rival` al 52 % desde arriba a la izquierda (120 % × 60 % en 10 % −12 %), radial de `--mine` al 52 % desde abajo a la derecha (en 90 % 112 %), ambos hasta transparente al 68 %, y un lineal vertical suave (cada color al 10 % sobre la noche en sus extremos). Escritorio: radiales de 70 % × 80 % al 48 % desde las esquinas (0 0 y 100 % 100 %) y el lineal a 135°. Las mezclas se hacen con `color-mix(in oklab, …)`.
+`--night` con tres capas. Móvil: radial de `--rival` al 52 % desde arriba a la izquierda (120 % × 60 % en 10 % −12 %), radial de `--mine` al 52 % desde abajo a la derecha (en 90 % 112 %), ambos hasta transparente al 68 %, y un lineal vertical suave (cada color al 10 % sobre la noche en sus extremos). Escritorio: radiales de 60 % × 55 % al 50 % anclados sobre cada portería (35 % −8 % para el rival, 35 % 108 % para el mío) y el lineal vertical. Las mezclas se hacen con `color-mix(in oklab, …)`.
+
+`color-scheme: dark` en la raíz: controles nativos y barra de desplazamiento (fina, `--sheet-3`) en oscuro.
 
 ## Tipografía
 

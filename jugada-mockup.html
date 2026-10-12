@@ -29,6 +29,7 @@
   --cond:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
   --material:blur(30px) saturate(180%);
   --peek:212px;
+  color-scheme:dark;
   transition:--mine 500ms ease,--rival 500ms ease;
 }
 *{box-sizing:border-box}
@@ -89,7 +90,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
 /* ---------- hoja inferior ---------- */
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:3;background:var(--sheet);border-radius:var(--r-sheet) var(--r-sheet) 0 0;
   padding:6px 20px calc(16px + env(safe-area-inset-bottom));box-shadow:inset 0 .5px 0 rgba(255,255,255,.14),0 -12px 40px rgba(0,0,0,.3);
-  max-height:78dvh;overflow:auto;overscroll-behavior:contain}
+  max-height:78dvh;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--sheet-3) transparent}
 .grab{display:block;width:100%;height:20px;position:relative}
 .grab::before{content:"";position:absolute;left:50%;top:7px;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(235,235,245,.3)}
 .meta{display:flex;align-items:baseline;gap:10px;font-size:13px;font-weight:500;color:var(--ink-2)}
@@ -233,9 +234,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
   .top{padding:18px 28px 8px}
   .word{font-size:32px}
   body{background-image:
-    radial-gradient(70% 80% at 0% 0%, color-mix(in oklab, var(--rival) 48%, transparent), transparent 65%),
-    radial-gradient(70% 80% at 100% 100%, color-mix(in oklab, var(--mine) 48%, transparent), transparent 65%),
-    linear-gradient(135deg, color-mix(in oklab, var(--rival) 10%, var(--night)), var(--night) 50%, color-mix(in oklab, var(--mine) 10%, var(--night)))}
+    /* anclados sobre cada portería: el rival detrás de la de arriba, el mío detrás de la de abajo */
+    radial-gradient(60% 55% at 35% -8%, color-mix(in oklab, var(--rival) 50%, transparent), transparent 70%),
+    radial-gradient(60% 55% at 35% 108%, color-mix(in oklab, var(--mine) 50%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in oklab, var(--rival) 10%, var(--night)), var(--night) 50%, color-mix(in oklab, var(--mine) 10%, var(--night)))}
   .pitch-wrap{inset:0 436px 0 0;padding:8px 24px 24px}
   .sheet{left:auto;right:28px;top:8px;bottom:auto;width:384px;border-radius:24px;padding:12px 24px 22px;max-height:calc(100% - 32px);
     box-shadow:inset 0 .5px 0 rgba(255,255,255,.14),0 24px 60px rgba(0,0,0,.35)}
@@ -1226,7 +1228,7 @@ function buildPlayers() {
     el('circle', { r: 1.35, fill: 'transparent' }, g);
     const ring = el('g', { opacity: 0 }, g);
     el('circle', { r: 1.22, fill: 'rgba(255,159,10,.14)', stroke: 'var(--cone)', 'stroke-width': 0.12 }, ring);
-    const tu = el('text', { x: -1.5, y: 0.05, 'text-anchor': 'end', style: 'text-anchor:end;font:italic 600 .78px var(--body)', fill: 'var(--cone-2)', 'dominant-baseline': 'central' }, ring);
+    const tu = el('text', { x: -1.5, y: 0.05, 'text-anchor': 'end', style: 'text-anchor:end;font:700 .8px var(--body);paint-order:stroke;stroke-linejoin:round', fill: '#fff', stroke: 'rgba(10,10,12,.7)', 'stroke-width': 0.18, 'dominant-baseline': 'central' }, ring);
     tu.textContent = 'tú';
     const body = el('g', { class: 'body' }, g);
     const kitG = el('g', {}, body);

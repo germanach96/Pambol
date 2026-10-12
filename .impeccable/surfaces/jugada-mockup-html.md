@@ -11,15 +11,15 @@ Mode: operate. Audience/job: the owner studies a 5v5 off-ball situation; drags p
 
 ## Direction contract
 
-THESIS: The pitch is a real night fut 5 pitch under four floodlights; the interface is the pitch itself. Refuses the flat green board with circles and a dark dashboard around it.
+THESIS: A tactical board that feels like a native iPhone app in dark mode: the pitch is a flat card floating on a night tinted by the two teams' colours, and every control is a translucent iOS material. Refuses fake lighting, mesh textures and costume fonts.
 
-OWN-WORLD: Night with cage mesh around a flat mown-stripe pitch (no simulated lighting). Flat kit tokens with a visible outline ring, no shadows or sheen. One accent, training-cone orange, for everything that is "what you do". Sentence-case Barlow; Barlow Condensed italic for the wordmark and big figures.
+OWN-WORLD: Near-black night (#0a0a0c) tinted by radial gradients of the rival colour (top, behind their goal) and my team colour (bottom). Flat mown-stripe pitch as a rounded card. Flat kit tokens with a visible outline ring. System font stack (SF Pro; SF Pro Rounded for wordmark and figures where the platform offers it, i.e. Safari/WebKit; plain system sans elsewhere). iOS dark tokens, translucent materials, segmented controls, grouped lists. One accent, system orange #ff9f0a, for everything that is "what you do".
 
 STORY: The user sees who has the ball, sees cleat prints leading to a cone where to stand, nudges a player (it grows slightly while held), watches the answer move, picks a prebuilt play from "Jugadas y equipos" and watches the players slide into place, dresses each team (style, base, outline), presses Animar and sees each player drag a fading comet tail.
 
 FIRST VIEWPORT: Mobile 390: top bar (pambol, kit selector), full-width pitch, bottom sheet peek (mode, title, one big figure, Animar + 3 icon buttons). Desktop: pitch left, floating sheet right.
 
-FORM: Fut 5 de noche, redirected by the user after the telestrator build was judged generic. seed: none (unavailable). Signature moves: cleat prints + cone, comet-tail replay, light thin arrows.
+FORM: iOS dark app, redirected by the user from the earlier night-pitch world (amendments 2 and 3). seed: none (unavailable). Signature moves: team-tinted night, cleat prints + cone, comet-tail replay, light thin arrows, real kits.
 
 AMENDMENT (2026-10-12, user request): "Cambiar las estelas de la repetición: que se desvanezcan como cola de cometa en lugar de quedarse dibujadas" and "Flechas más ligeras: una línea fina con punta pequeña, sin cuña ni líneas de velocidad. La velocidad se ve por el largo." Long-exposure replay and brush-wedge arrows are retired. Kits are user-configurable per team (lisa, rayas, bandas, mitades; base + outline color, dorsal ink picked for contrast).
 
