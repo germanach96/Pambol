@@ -3,42 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b1110">
+<meta name="theme-color" content="#0a0a0c">
 <meta name="description" content="Pizarra de fútbol 5: mueve a los jugadores y Pambol te dice qué hacer en el siguiente segundo.">
 <title>Pambol</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,600&family=Barlow+Condensed:ital,wght@0,600;0,700;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0a0c'/%3E%3Crect x='7' y='7' width='18' height='18' rx='4' fill='%23d97a00'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23ff9f0a'/%3E%3Ccircle cx='16' cy='16' r='4.4' fill='none' stroke='%23fff6ea' stroke-width='1.6'/%3E%3C/svg%3E">
 <style>
-/* Pambol. Mundo: fut 5 de noche, pasto sintético bajo cuatro lámparas, cancha enjaulada.
-   Radios: controles 14px, hoja 24px, chips de texto 999px. Un acento: naranja cono = lo que tú haces. */
+/* Pambol. Lenguaje de app de Apple en modo oscuro: tipografía del sistema, materiales translúcidos sobre un fondo
+   que se tiñe con los colores de los dos equipos (rival arriba, el mío abajo). Cancha plana, sin luz simulada.
+   Radios: controles 12px, segmentos 9px, hoja 28px. Un acento: naranja = lo que tú haces. */
+/* --mine y --rival se animan al cambiar la equipación (el degradado del fondo los usa) */
+@property --mine{syntax:'<color>';inherits:true;initial-value:#d8263b}
+@property --rival{syntax:'<color>';inherits:true;initial-value:#5cb8ec}
 :root{
-  --night:#0b1110; --night-2:#0f1716;
-  --sheet:#131c1b; --sheet-2:#1b2624; --sheet-3:#24322f;
-  --line:rgba(214,236,226,.1);
-  --ink:#edf3ef; --ink-2:#b7c5be; --ink-3:#93a39c;
-  --cone:#ff8c1a; --cone-2:#ffb05a; --cone-ink:#241102;
-  --miss:#ff6363;
-  --mine:#d8263b; --mine-w:#f3efe6; --mine-gk:#6d4dff;
-  --rival:#5cb8ec; --rival-ink:#0a2b45; --rival-gk:#c6ef3f;
-  --r-ctl:14px; --r-sheet:24px;
+  --night:#0a0a0c;
+  --sheet:rgba(30,30,32,.72); --sheet-solid:#1e1e20;
+  --sheet-2:rgba(118,118,128,.24); --sheet-3:rgba(118,118,128,.42); --thumb:#5b5b60;
+  --line:rgba(84,84,88,.6);
+  --ink:#f5f5f7; --ink-2:rgba(235,235,245,.7); --ink-3:rgba(235,235,245,.56);
+  --cone:#ff9f0a; --cone-2:#ffb340; --cone-ink:#1f1300;
+  --miss:#ff453a;
+  --mine:#d8263b; --rival:#5cb8ec;   /* se recalculan desde la equipación de cada equipo */
+  --r-ctl:12px; --r-sheet:28px;
   --ease-out:cubic-bezier(0.23,1,0.32,1); --ease-drawer:cubic-bezier(0.32,0.72,0,1);
-  --cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
-  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --cond:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+  --material:blur(30px) saturate(180%);
   --peek:212px;
+  color-scheme:dark;
+  transition:--mine 500ms ease,--rival 500ms ease;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{
   background-color:var(--night);
-  /* la malla de la jaula alrededor de la cancha */
+  /* los colores de los equipos tiñen la noche: el rival desde arriba, el mío desde abajo */
   background-image:
-    radial-gradient(120% 55% at 50% -10%, rgba(255,238,205,.07), transparent 60%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'%3E%3Cpath d='M0 11 Q5.5 9.6 11 0 M11 22 Q16.5 12.4 22 11 M0 11 Q5.5 12.4 11 22 M11 0 Q16.5 9.6 22 11' fill='none' stroke='%23c8e6d7' stroke-opacity='.07' stroke-width='1.1'/%3E%3C/svg%3E");
-  color:var(--ink);font:400 16px/1.45 var(--body);
+    radial-gradient(120% 60% at 10% -12%, color-mix(in oklab, var(--rival) 52%, transparent), transparent 68%),
+    radial-gradient(120% 60% at 90% 112%, color-mix(in oklab, var(--mine) 52%, transparent), transparent 68%),
+    linear-gradient(180deg, color-mix(in oklab, var(--rival) 10%, var(--night)), var(--night) 45%, color-mix(in oklab, var(--mine) 10%, var(--night)));
+  color:var(--ink);font:400 16px/1.45 var(--body);letter-spacing:-.011em;
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow:hidden;overscroll-behavior:none;
 }
-button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+::selection{background:color-mix(in oklab, var(--cone) 45%, transparent)}
+button{font:inherit;color:inherit;letter-spacing:inherit;cursor:pointer;border:0;background:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
 .ico{width:18px;height:18px;flex:none;fill:currentColor}
@@ -47,17 +54,17 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
 
 /* ---------- barra superior ---------- */
 .top{display:flex;align-items:center;gap:14px;padding:10px 16px 6px;position:relative;z-index:3}
-.word{font:800 italic 30px/1 var(--cond);letter-spacing:-.01em;margin:0;padding-right:2px}
+.word{font:800 28px/1 var(--cond);letter-spacing:-.035em;margin:0;padding-right:2px}
 .who{margin-left:auto;display:flex;align-items:center;gap:6px}
 .who span{font-size:14px;color:var(--ink-2);margin-right:4px;white-space:nowrap}
-.kit{width:38px;height:38px;border-radius:50%;position:relative;display:grid;place-items:center;
-  font:700 16px/1 var(--cond);color:#fff;text-shadow:0 1px 0 rgba(40,4,10,.6),0 0 3px rgba(40,4,10,.55);
-  background:linear-gradient(90deg,var(--mine) 0 16.6%,var(--mine-w) 16.6% 33.3%,var(--mine) 33.3% 50%,var(--mine-w) 50% 66.6%,var(--mine) 66.6% 83.3%,var(--mine-w) 83.3%);
-  box-shadow:inset 0 0 0 1px rgba(0,0,0,.35),inset 0 -6px 10px rgba(0,0,0,.18);
+/* Las camisetas se pintan desde la configuración de cada equipo: --kit (fondo), --ring (contorno), --ink/--halo (dorsal). */
+.kit{--ring:rgba(0,0,0,.35);width:38px;height:38px;border-radius:50%;position:relative;display:grid;place-items:center;
+  font:700 15px/1 var(--cond);letter-spacing:-.02em;color:var(--ink-k,#fff);text-shadow:0 0 2px var(--halo,rgba(40,4,10,.7)),0 0 3px var(--halo,rgba(40,4,10,.55));
+  background:var(--kit,var(--mine));
+  box-shadow:inset 0 0 0 3px var(--ring),inset 0 0 0 4px rgba(0,0,0,.25);
   transition:transform 160ms var(--ease-out),box-shadow 200ms ease}
-.kit.gk{background:var(--mine-gk)}
 .kit:active{transform:scale(.94)}
-.kit[aria-pressed="true"]{box-shadow:inset 0 0 0 1px rgba(0,0,0,.35),0 0 0 2px var(--night),0 0 0 4px var(--cone)}
+.kit[aria-pressed="true"]{box-shadow:inset 0 0 0 3px var(--ring),inset 0 0 0 4px rgba(0,0,0,.25),0 0 0 2px var(--night),0 0 0 4px var(--cone)}
 
 /* ---------- escenario ---------- */
 .stage{position:relative;min-height:0;overflow:hidden}
@@ -65,13 +72,16 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
 #pitch{height:100%;width:100%;display:block;touch-action:none;-webkit-user-select:none;user-select:none;overflow:visible}
 .stage.picking #pitch{cursor:crosshair}
 
+/* material translúcido para todo lo que flota sobre la cancha */
+.hint,.toast,.sheet{-webkit-backdrop-filter:var(--material);backdrop-filter:var(--material)}
 .hint{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:2;display:flex;align-items:center;gap:10px;width:max-content;max-width:calc(100% - 32px);
-  padding:8px 8px 8px 14px;border-radius:999px;background:rgba(9,15,14,.86);font-size:14px;font-weight:500;color:var(--ink);
-  box-shadow:0 8px 24px rgba(2,8,6,.4);line-height:1.3;transition:opacity 200ms ease,transform 200ms var(--ease-out)}
-.hint button{flex:none;height:28px;padding:0 12px;border-radius:999px;background:var(--sheet-3);font-size:13px;font-weight:600}
+  padding:8px 8px 8px 16px;border-radius:999px;background:rgba(44,44,46,.66);font-size:14px;font-weight:500;color:var(--ink);
+  box-shadow:inset 0 .5px 0 rgba(255,255,255,.14),0 10px 30px rgba(0,0,0,.3);line-height:1.3;transition:opacity 200ms ease,transform 200ms var(--ease-out)}
+.hint button{flex:none;height:30px;padding:0 14px;border-radius:999px;background:var(--sheet-3);font-size:14px;font-weight:600}
 .hint.gone{opacity:0;transform:translate(-50%,-6px);pointer-events:none}
 
-.toast{position:absolute;z-index:4;pointer-events:none;padding:6px 11px;border-radius:999px;background:rgba(9,15,14,.9);
+.toast{position:absolute;z-index:2;pointer-events:none;padding:7px 12px;border-radius:999px;background:rgba(44,44,46,.72);
+  box-shadow:inset 0 .5px 0 rgba(255,255,255,.14),0 6px 18px rgba(0,0,0,.28);
   font:600 13px/1.1 var(--body);color:var(--ink);white-space:nowrap;transform:translate(-50%,6px);opacity:0;
   transition:opacity 160ms ease,transform 200ms var(--ease-out)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
@@ -79,69 +89,119 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
 
 /* ---------- hoja inferior ---------- */
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:3;background:var(--sheet);border-radius:var(--r-sheet) var(--r-sheet) 0 0;
-  padding:6px 18px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -20px 44px rgba(2,8,6,.5);
-  max-height:78dvh;overflow:auto;overscroll-behavior:contain}
+  padding:6px 20px calc(16px + env(safe-area-inset-bottom));box-shadow:inset 0 .5px 0 rgba(255,255,255,.14),0 -12px 40px rgba(0,0,0,.3);
+  max-height:78dvh;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--sheet-3) transparent}
 .grab{display:block;width:100%;height:20px;position:relative}
-.grab::before{content:"";position:absolute;left:50%;top:8px;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:rgba(255,255,255,.2)}
-.meta{display:flex;align-items:baseline;gap:10px;font-size:14px;color:var(--ink-2)}
+.grab::before{content:"";position:absolute;left:50%;top:7px;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(235,235,245,.3)}
+.meta{display:flex;align-items:baseline;gap:10px;font-size:13px;font-weight:500;color:var(--ink-2)}
 .meta .tag{margin-left:auto;font-size:13px;color:var(--ink-3)}
 .meta .tag.rule{color:var(--cone-2)}
-.title{font:700 25px/1.08 var(--cond);letter-spacing:.005em;margin:4px 0 2px;text-wrap:balance}
-.title small{display:block;font:500 17px/1.2 var(--body);color:var(--ink-2);margin-top:3px}
-.figs{display:flex;align-items:flex-end;gap:16px;margin:10px 0 12px}
-.hero-n{font:800 italic 46px/.9 var(--cond);letter-spacing:-.01em;color:var(--ink);white-space:nowrap}
-.hero-n small{font-size:.5em;font-style:normal;font-weight:700;margin-left:5px;color:var(--ink-2)}
+.title{font:700 23px/1.12 var(--body);letter-spacing:-.025em;margin:4px 0 2px;text-wrap:balance}
+.title small{display:block;font:400 16px/1.25 var(--body);letter-spacing:-.015em;color:var(--ink-2);margin-top:3px}
+.figs{display:flex;align-items:flex-end;gap:16px;margin:10px 0 14px}
+.hero-n{font:700 44px/.9 var(--cond);letter-spacing:-.04em;color:var(--ink);white-space:nowrap}
+.hero-n small{font-size:.45em;font-weight:600;letter-spacing:-.01em;margin-left:4px;color:var(--ink-2)}
 .hero-l{font-size:14px;color:var(--ink-2);line-height:1.3;padding-bottom:3px}
 .hero-l b{color:var(--ink);font-weight:600}
 .hero-l .bad{color:var(--miss)}
 .acts{display:flex;gap:8px;align-items:center}
-.go{flex:1;height:50px;border-radius:var(--r-ctl);background:var(--cone);color:var(--cone-ink);display:flex;align-items:center;justify-content:center;gap:9px;
-  font:700 18px/1 var(--cond);letter-spacing:.02em;transition:transform 160ms var(--ease-out),background-color 160ms ease;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
+.go{flex:1;height:50px;border-radius:var(--r-ctl);background:var(--cone);color:var(--cone-ink);display:flex;align-items:center;justify-content:center;gap:8px;
+  font:600 17px/1 var(--body);letter-spacing:-.02em;transition:transform 160ms var(--ease-out),background-color 160ms ease}
 .go:active{transform:scale(.97)}
-.sq{width:50px;height:50px;border-radius:var(--r-ctl);background:var(--sheet-2);display:grid;place-items:center;color:var(--ink-2);
+.sq{width:50px;height:50px;border-radius:var(--r-ctl);background:var(--sheet-2);display:grid;place-items:center;color:var(--ink);
   transition:transform 160ms var(--ease-out),background-color 160ms ease,color 160ms ease}
 .sq:active{transform:scale(.95)}
 .sq[aria-pressed="true"]{background:var(--sheet-3);color:var(--cone-2)}
-.sq:disabled{opacity:.35;cursor:default}
+.sq:disabled{opacity:.3;cursor:default}
 .txt{height:50px;padding:0 16px;border-radius:var(--r-ctl);background:var(--sheet-2);font-weight:600;font-size:15px;color:var(--ink);white-space:nowrap;
   transition:transform 160ms var(--ease-out),background-color 160ms ease}
 .txt:active{transform:scale(.97)}
 .txt[aria-pressed="true"]{background:var(--sheet-3);color:var(--cone-2)}
 @media (hover:hover) and (pointer:fine){
-  .go:hover{background:var(--cone-2)} .sq:hover,.txt:hover{background:var(--sheet-3);color:var(--ink)} .kit:hover{transform:scale(1.06)}
+  .go:hover{background:var(--cone-2)} .sq:not(:disabled):hover,.txt:hover{background:var(--sheet-3)} .kit:hover{transform:scale(1.06)}
 }
-.why{margin:14px 0 0;color:var(--ink-2);font-size:15px;max-width:52ch;text-wrap:pretty}
+.why{margin:14px 0 0;color:var(--ink-2);font-size:15px;line-height:1.45;max-width:52ch;text-wrap:pretty}
 .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows 300ms var(--ease-out)}
 .sheet.open .more{grid-template-rows:1fr}
 .more > div{overflow:hidden}
-.notes{display:grid;gap:10px;margin:14px 0 2px;padding-top:14px;border-top:1px solid var(--line)}
+.notes{display:grid;gap:10px;margin:14px 0 2px;padding-top:14px;border-top:.5px solid var(--line)}
 .note{margin:0;display:grid;grid-template-columns:86px 1fr;gap:10px;font-size:15px;color:var(--ink-2)}
-.note b{font:700 15px/1.35 var(--cond);color:var(--ink);letter-spacing:.01em}
+.note b{font:600 15px/1.35 var(--body);color:var(--ink)}
 .note.avoid b{color:var(--miss)} .note.next b{color:var(--cone-2)}
 .how{margin:14px 0 0;font-size:13px;color:var(--ink-3)}
-.morebtn{display:flex;align-items:center;gap:6px;margin-top:10px;height:32px;font-size:14px;font-weight:600;color:var(--ink-2)}
+.morebtn{display:flex;align-items:center;gap:6px;margin-top:10px;height:32px;font-size:15px;font-weight:500;color:var(--cone-2)}
 .morebtn .ico{width:14px;height:14px;transition:transform 240ms var(--ease-out)}
 .sheet:not(.open) .morebtn .ico{transform:rotate(180deg)}
 
+/* ---------- panel: jugadas y equipos ---------- */
+.sethead{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
+.sethead .title{margin:0}
+.sethead .txt{margin-left:auto;height:34px;padding:0 14px;border-radius:999px;color:var(--cone-2)}
+/* control segmentado al estilo iOS: pista gris y una pastilla elevada para lo elegido */
+.tabs,.seg{display:grid;gap:2px;padding:2px;border-radius:11px;background:var(--sheet-2)}
+.tabs{grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.seg{grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+.tab{white-space:nowrap}
+.tab,.seg button{height:34px;border-radius:9px;font-size:14px;font-weight:500;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:background-color 200ms ease,box-shadow 200ms ease,transform 160ms var(--ease-out)}
+.seg button{height:40px}
+.tab:active,.seg button:active{transform:scale(.96)}
+.tab[aria-selected="true"],.seg button[aria-pressed="true"]{background:var(--thumb);font-weight:600;box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04)}
+.dot{width:16px;height:16px;border-radius:50%;flex:none;background:var(--kit);box-shadow:inset 0 0 0 2px var(--ring),0 0 0 .5px rgba(0,0,0,.4)}
+.plays{list-style:none;margin:0;padding:0;border-radius:var(--r-ctl);background:var(--sheet-2);overflow:hidden}
+.plays li + li .play::before{content:"";position:absolute;left:16px;right:0;top:0;border-top:.5px solid var(--line)}
+.play{position:relative;width:100%;min-height:48px;padding:0 16px;display:flex;align-items:center;gap:12px;text-align:left;
+  transition:background-color 160ms ease}
+.play:active{background:var(--sheet-3)}
+.play b{font-weight:400;font-size:16px;color:var(--ink)}
+.play span{margin-left:auto;font-size:15px;color:var(--ink-3);white-space:nowrap}
+.play[aria-pressed="true"] b{color:var(--cone-2);font-weight:600}
+.grp{margin:0 0 18px;padding:0;border:0;min-width:0}
+.grp legend{padding:0 0 0 4px;margin:0 0 7px;font-size:13px;font-weight:500;color:var(--ink-2)}
+.seg button small{font-size:12px;font-weight:400;color:var(--ink-2)}
+/* camiseta: vista previa + 7 estilos en una rejilla de 4 x 2 */
+.seg.styles{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}
+.styles .prev{display:grid;place-items:center}
+.styles .prev svg{width:44px;height:44px;overflow:visible}
+.seg button.stl{flex-direction:column;gap:4px;height:56px;font-size:12px}
+.stl .dot{width:20px;height:20px}
+/* 10 colores en 5 x 2: cada muestra conserva un blanco de toque cómodo */
+.sws{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px 0;justify-items:center}
+.sw{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;transition:transform 160ms var(--ease-out)}
+.sw i{width:28px;height:28px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2);transition:box-shadow 160ms ease}
+.sw:active{transform:scale(.92)}
+.sw[aria-pressed="true"] i{box-shadow:0 0 0 2.5px var(--sheet-solid),0 0 0 4.5px var(--ink)}
+.surfs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.surf{display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:6px 6px 9px;border-radius:var(--r-ctl);background:var(--sheet-2);
+  font-size:13px;font-weight:500;color:var(--ink);transition:transform 160ms var(--ease-out),box-shadow 160ms ease}
+.surf i{height:46px;border-radius:7px;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18)}
+.surf:active{transform:scale(.97)}
+.surf[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink);font-weight:600}
+.clash{margin:-8px 0 18px;padding-left:4px;font-size:13px;color:var(--ink);display:flex;gap:8px;align-items:baseline}
+.clash::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--miss);transform:translateY(-1px)}
+@media (hover:hover) and (pointer:fine){
+  .tab:not([aria-selected="true"]):hover,.seg button:not([aria-pressed="true"]):hover{background:rgba(118,118,128,.18)} .play:hover{background:rgba(118,118,128,.14)} .sw:hover{transform:scale(1.06)}
+}
+
 /* repetición */
 .pb-row{display:flex;align-items:baseline;gap:14px;margin:2px 0 6px}
-.clock{font:800 italic 44px/.95 var(--cond);color:var(--ink);min-width:3.4ch}
-.cap{font:600 18px/1.2 var(--body);color:var(--ink)}
+.clock{font:700 42px/.95 var(--cond);letter-spacing:-.04em;color:var(--ink);min-width:3.4ch}
+.cap{font:600 17px/1.2 var(--body);letter-spacing:-.02em;color:var(--ink);text-wrap:balance}
 .cap.in{animation:capIn 220ms var(--ease-out)}
 @keyframes capIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .scrub{position:relative;height:34px;margin:2px 0 10px}
 .scrub input{position:absolute;inset:10px 0 auto;width:100%;margin:0;height:14px;-webkit-appearance:none;appearance:none;background:transparent}
-.scrub input::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--cone) var(--p,0%),rgba(255,255,255,.14) var(--p,0%))}
-.scrub input::-moz-range-track{height:3px;border-radius:2px;background:rgba(255,255,255,.14)}
-.scrub input::-moz-range-progress{height:3px;background:var(--cone)}
-.scrub input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-7.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,140,26,.35)}
-.scrub input::-moz-range-thumb{width:16px;height:16px;border:0;border-radius:50%;background:#fff}
+.scrub input::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--cone) var(--p,0%),rgba(120,120,128,.36) var(--p,0%))}
+.scrub input::-moz-range-track{height:4px;border-radius:2px;background:rgba(120,120,128,.36)}
+.scrub input::-moz-range-progress{height:4px;background:var(--cone)}
+.scrub input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-9px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.2),0 .5px 2px rgba(0,0,0,.2)}
+.scrub input::-moz-range-thumb{width:22px;height:22px;border:0;border-radius:50%;background:#fff}
 .ticks{position:absolute;inset:0;pointer-events:none}
-.ticks i{position:absolute;top:22px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--ink-3)}
+.ticks i{position:absolute;top:24px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--ink-3)}
 .evs{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px;font-size:15px}
 .evs li{display:grid;grid-template-columns:52px 1fr;color:var(--ink-3);transition:color 200ms ease}
 .evs li.on{color:var(--ink)}
-.evs li span{font:600 15px/1.4 var(--cond)}
+.evs li span{font:600 15px/1.4 var(--cond);letter-spacing:-.02em}
 .evs li.on span{color:var(--cone-2)}
 
 /* ---------- SVG ---------- */
@@ -149,8 +209,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
 .tok .body{transform-box:fill-box;transform-origin:center;transition:transform 260ms cubic-bezier(0.34,1.36,0.64,1)}
 .tok.lift .body{transform:scale(1.12);transition:transform 160ms var(--ease-out)}
 .tok.lift{cursor:grabbing}
-.n{font:700 1.04px var(--cond);text-anchor:middle;dominant-baseline:central;pointer-events:none}
-.svgchip text{font:600 .7px var(--body);dominant-baseline:central}
+#pitch text{letter-spacing:0}   /* el tracking heredado se redondea mal en un SVG escalado */
+.n{font:700 1px var(--cond);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.svgchip text{font:600 .66px var(--body);dominant-baseline:central}
 .tip{cursor:grab}
 .roll{animation:roll .9s linear infinite}
 @keyframes roll{to{stroke-dashoffset:-.9}}
@@ -170,16 +231,28 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
   .tok .body,.tok.lift .body{transition:none}
 }
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+/* sin transparencias: materiales sólidos */
+@media (prefers-reduced-transparency:reduce){
+  :root{--sheet:#1e1e20}
+  .hint,.toast,.sheet{-webkit-backdrop-filter:none;backdrop-filter:none}
+  .hint,.toast{background:#2c2c2e}
+}
 
 /* ---------- escritorio ---------- */
 @media (min-width:960px){
-  .top{padding:16px 28px 8px}
-  .word{font-size:36px}
+  .top{padding:18px 28px 8px}
+  .word{font-size:32px}
+  body{background-image:
+    /* anclados sobre cada portería: el rival detrás de la de arriba, el mío detrás de la de abajo */
+    radial-gradient(60% 55% at 35% -8%, color-mix(in oklab, var(--rival) 50%, transparent), transparent 70%),
+    radial-gradient(60% 55% at 35% 108%, color-mix(in oklab, var(--mine) 50%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in oklab, var(--rival) 10%, var(--night)), var(--night) 50%, color-mix(in oklab, var(--mine) 10%, var(--night)))}
   .pitch-wrap{inset:0 436px 0 0;padding:8px 24px 24px}
-  .sheet{left:auto;right:28px;top:8px;bottom:auto;width:384px;border-radius:var(--r-sheet);padding:10px 24px 22px;max-height:calc(100% - 32px)}
+  .sheet{left:auto;right:28px;top:8px;bottom:auto;width:384px;border-radius:24px;padding:12px 24px 22px;max-height:calc(100% - 32px);
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.14),0 24px 60px rgba(0,0,0,.35)}
   .grab{display:none}
   .hint{left:calc((100% - 436px) / 2)}
-  .title{font-size:30px}
+  .title{font-size:26px}
   .more{grid-template-rows:1fr}
   .morebtn{display:none}
 }
@@ -198,14 +271,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cone);outline-o
       <svg id="pitch" viewBox="-2 -2 24 44" role="img" aria-label="Cancha de fútbol 5 de noche con los diez jugadores">
         <defs>
           <clipPath id="tokClip"><circle r=".84"/></clipPath>
-          <radialGradient id="lampGlow"><stop offset="0" stop-color="#fff6e0" stop-opacity=".55"/><stop offset=".35" stop-color="#ffe9c2" stop-opacity=".12"/><stop offset="1" stop-color="#ffe9c2" stop-opacity="0"/></radialGradient>
           <pattern id="net" width=".32" height=".32" patternUnits="userSpaceOnUse"><path d="M0 0L.32 .32M.32 0L0 .32" stroke="rgba(255,255,255,.4)" stroke-width=".025"/></pattern>
         </defs>
         <g id="field"></g>
         <g id="zones"></g>
         <g id="expo" class="expo"></g>
         <g id="marks"></g>
-        <g id="shadows"></g>
         <g id="rec"></g>
         <g id="arrows"></g>
         <g id="players"></g>
@@ -284,27 +355,120 @@ function P(id, team, number, x, y, o = {}) {
   return { id, team, number, gk: !!o.gk, pos: { x, y }, dir: o.dir ? V.unit(o.dir) : { x: 0, y: team === 'mine' ? 1 : -1 },
            speed: o.speed || 'parado', intensity: o.intensity || 2 };
 }
-const SCENARIO = {
-  name: 'Sin balón · Ayuda a tu compañero',
-  build: () => ({
-    players: [
-      P('a1', 'mine', 1, 10, 2.6, { gk: true }),
-      P('a4', 'mine', 4, 6, 10),
-      P('a6', 'mine', 6, 6, 17, { dir: { x: 0.25, y: 1 }, speed: 'trote' }),
-      P('a10', 'mine', 10, 14, 18),
-      P('a9', 'mine', 9, 10, 28.5),
-      P('r1', 'rival', 1, 10, 38.4, { gk: true }),
-      P('r5', 'rival', 5, 12, 24),
-      P('r3', 'rival', 3, 10, 31),
-      P('r8', 'rival', 8, 7.5, 21, { dir: { x: -0.45, y: -1 }, speed: 'media' }),
-      P('r7', 'rival', 7, 4, 27),
-    ],
-    ball: { ownerId: 'a6', pos: null },
-    meId: 'a10',
-  }),
-};
+/* Jugadas prefabricadas. Todas usan los mismos diez jugadores (mismos id) para que al cambiar se deslicen a su sitio.
+   Orden de cada lista: portero, y luego a4 a6 a10 a9 / r5 r3 r8 r7. */
+function team(ids, nums, spots) { return ids.map((id, i) => P(id, id[0] === 'a' ? 'mine' : 'rival', nums[i], spots[i][0], spots[i][1], spots[i][2] || {})); }
+const MINE_IDS = ['a1', 'a4', 'a6', 'a10', 'a9'], MINE_N = [1, 4, 6, 10, 9];
+const RIV_IDS = ['r1', 'r5', 'r3', 'r8', 'r7'], RIV_N = [1, 5, 3, 8, 7];
+const GK = { gk: true };
+const up = (speed, x = 0) => ({ dir: { x, y: 1 }, speed }), down = (speed, x = 0) => ({ dir: { x, y: -1 }, speed });
+const PLAYS = [
+  { id: 'salida', name: 'Salida presionada', build: () => ({
+    players: [...team(MINE_IDS, MINE_N, [[10, 2.4, GK], [6.5, 5.5, up('trote', 0.2)], [15, 8], [10.5, 14], [4, 18]]),
+              ...team(RIV_IDS, RIV_N, [[10, 38.4, GK], [9, 9.5, down('media', -0.4)], [14, 11, down('trote', -0.3)], [10, 18], [4.5, 13, down('trote')]])],
+    ball: { ownerId: 'a4', pos: null }, meId: 'a4' }) },
+  { id: 'puerta-mio', name: 'Saque de puerta mío', build: () => ({
+    players: [...team(MINE_IDS, MINE_N, [[10, 1.6, GK], [3.5, 7], [16.5, 7.5], [10, 15], [9, 27]]),
+              ...team(RIV_IDS, RIV_N, [[10, 38.4, GK], [6, 11, down('trote')], [14, 11.5], [10.5, 19], [5, 22]])],
+    ball: { ownerId: 'a1', pos: null }, meId: 'a6' }) },
+  { id: 'puerta-rival', name: 'Saque de puerta rival', build: () => ({
+    players: [...team(MINE_IDS, MINE_N, [[10, 2.6, GK], [10, 19], [5.5, 26], [14.5, 29, up('trote', -0.2)], [10, 31]]),
+              ...team(RIV_IDS, RIV_N, [[10, 38.6, GK], [3.5, 33], [16.5, 32.5], [10, 25], [6, 21]])],
+    ball: { ownerId: 'r1', pos: null }, meId: 'a10' }) },
+  { id: 'banda', name: 'Saque de banda', build: () => ({
+    players: [...team(MINE_IDS, MINE_N, [[10, 2.6, GK], [0.7, 24, { dir: { x: 1, y: 0.3 } }], [7, 19], [5, 28.5], [12, 31.5]]),
+              ...team(RIV_IDS, RIV_N, [[10, 38.4, GK], [4, 25.5, down('trote', 0.3)], [9.5, 30.5], [8.5, 21.5], [13.5, 26]])],
+    ball: { ownerId: 'a4', pos: null }, meId: 'a10' }) },
+  { id: 'contra', name: 'Contragolpe 3 contra 2', build: () => ({
+    players: [...team(MINE_IDS, MINE_N, [[10, 3, GK], [8, 11], [10, 21.5, up('sprint')], [16, 20, up('sprint', -0.15)], [4, 21, up('media', 0.1)]]),
+              ...team(RIV_IDS, RIV_N, [[10, 38.4, GK], [8, 29.5, down('trote')], [13, 30.5, down('trote')], [11.5, 16, up('sprint')], [6, 14, up('media')]])],
+    ball: { ownerId: 'a6', pos: null }, meId: 'a6' }) },
+  { id: 'bloque', name: 'Bloque bajo', build: () => ({
+    players: [...team(MINE_IDS, MINE_N, [[10, 4, GK], [4, 24], [10, 22, up('trote')], [16.5, 27], [10, 30.5]]),
+              ...team(RIV_IDS, RIV_N, [[10, 38.6, GK], [7, 33.5], [13, 33.5], [7.5, 28], [12.5, 28]])],
+    ball: { ownerId: 'a6', pos: null }, meId: 'a6' }) },
+  { id: 'ayuda', name: 'Ayuda a tu compañero', build: () => ({
+    players: [...team(MINE_IDS, MINE_N, [[10, 2.6, GK], [6, 10], [6, 17, { dir: { x: 0.25, y: 1 }, speed: 'trote' }], [14, 18], [10, 28.5]]),
+              ...team(RIV_IDS, RIV_N, [[10, 38.4, GK], [12, 24], [10, 31], [7.5, 21, { dir: { x: -0.45, y: -1 }, speed: 'media' }], [4, 27]])],
+    ball: { ownerId: 'a6', pos: null }, meId: 'a10' }) },
+];
+const playById = id => PLAYS.find(p => p.id === id) || PLAYS[PLAYS.length - 1];
+const buildPlay = id => ({ ...playById(id).build(), play: playById(id).id });
 
-let state = SCENARIO.build();
+/* Equipaciones: color base, contorno (también el segundo color de rayas, bandas y mitades) y estilo. */
+const COLORS = [
+  ['blanco', '#f3efe6'], ['negro', '#1c1f22'], ['rojo', '#d8263b'], ['granate', '#7d1d2f'], ['rosa', '#ec6fa6'],
+  ['naranja', '#f07a1a'], ['amarillo', '#f2c94c'], ['verde', '#1f8a4c'], ['celeste', '#5cb8ec'], ['azul', '#1f3f8f'],
+];
+const STYLES = [['lisa', 'Lisa'], ['rayas', 'Rayas'], ['bandas', 'Bandas'], ['mitades', 'Mitades'], ['v', 'V'], ['franja', 'Franja'], ['cruzada', 'Cruzada']];
+/* Dibujos de una sola pieza en el cuadrado -1..1 de la ficha (se recortan al círculo):
+   V de Vélez o Veracruz, franja horizontal de Boca, banda cruzada de River. */
+const SHAPES = {
+  v: 'M-1 -0.95 L0 0.05 L1 -0.95 L1 -0.55 L0 0.45 L-1 -0.55 Z',
+  franja: 'M-1 -0.18 H1 V0.18 H-1 Z',
+  cruzada: 'M-1 -0.6 L-0.6 -1 L1 0.6 L0.6 1 Z',
+};
+const KIT_DEFAULT = { mine: { base: '#d8263b', ring: '#f3efe6', style: 'rayas' }, rival: { base: '#5cb8ec', ring: '#1f3f8f', style: 'lisa' } };
+const GK_COLOR = { mine: '#6d4dff', rival: '#c6ef3f' };
+let kits = clone(KIT_DEFAULT);
+try { const k = JSON.parse(localStorage.getItem('pambol.kits')); if (k && k.mine && k.rival) kits = k; } catch (e) { /* sin almacenamiento */ }
+
+/* Superficie de la cancha: planas, sin luz, cada una con su textura real. css = muestra en el panel. */
+const SURFACES = [
+  { id: 'cesped', name: 'Césped', kind: 'stripes', base: '#2a743b', alt: '#276d37', step: 4, css: 'repeating-linear-gradient(180deg,#2a743b 0 10px,#276d37 10px 20px)' },
+  { id: 'sintetico', name: 'Sintético', kind: 'stripes', base: '#2e8c47', alt: '#2a8141', step: 2, css: 'repeating-linear-gradient(180deg,#2e8c47 0 5px,#2a8141 5px 10px)' },
+  { id: 'tierra', name: 'Tierra', kind: 'stripes', base: '#9a5b3c', alt: '#935739', step: 1.5, css: 'repeating-linear-gradient(180deg,#9a5b3c 0 4px,#935739 4px 8px)' },
+  { id: 'concreto', name: 'Concreto', kind: 'slabs', base: '#6c7075', step: 5, css: 'linear-gradient(rgba(0,0,0,.25) 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,rgba(0,0,0,.25) 1px,transparent 1px) 0 0/16px 16px,#6c7075' },
+  { id: 'madera', name: 'Madera', kind: 'planks', tones: ['#a06c3b', '#9b693a', '#a4703f'], css: 'repeating-linear-gradient(90deg,#a06c3b 0 7px,#97653a 7px 14px,#a87444 14px 21px)' },
+  { id: 'pista', name: 'Pista azul', kind: 'court', base: '#2d6299', out: '#1f4570', css: 'linear-gradient(#2d6299,#2d6299) center/62% 58% no-repeat,#1f4570' },
+];
+const surfById = id => SURFACES.find(x => x.id === id) || SURFACES[0];
+let surface = 'cesped';
+try { surface = surfById(localStorage.getItem('pambol.surface')).id; } catch (e) { /* sin almacenamiento */ }
+
+const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+function lum(h) { const c = hexRgb(h).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+const mix = (a, b, t) => '#' + hexRgb(a).map((v, i) => Math.round(v + (hexRgb(b)[i] - v) * t).toString(16).padStart(2, '0')).join('');
+/* El dorsal pisa uno o dos colores según el estilo: se elige blanco o tinta oscura, la que mejor se lea sobre el peor de ellos,
+   con un halo del tono contrario. */
+const INK_LIGHT = '#ffffff', INK_DARK = '#10171a';
+function kitColors(teamId, gk) { const k = kits[teamId]; return gk ? { base: GK_COLOR[teamId], ring: k.ring, style: 'lisa' } : k; }
+function dorsalInk(k) {
+  const under = k.style === 'lisa' ? [k.base] : [k.base, k.ring];
+  const score = ink => Math.min(...under.map(c => contrast(ink, c)));
+  const light = score(INK_LIGHT) >= score(INK_DARK), worst = score(light ? INK_LIGHT : INK_DARK);
+  // el halo solo engorda cuando hace falta: fino si la tinta ya contrasta, más grueso sobre colores difíciles
+  return { ink: light ? INK_LIGHT : INK_DARK, halo: light ? 'rgba(8,12,14,.72)' : 'rgba(255,255,255,.6)', w: worst >= 4.5 ? 0.06 : worst >= 3 ? 0.11 : 0.16 };
+}
+function kitCss(k) {
+  const { base: a, ring: b } = k;
+  // franjas de 1/6 del ancho con el centro en el color base, como en las fichas
+  const bars = deg => `linear-gradient(${deg}deg,${b} 0 8.33%,${a} 8.33% 25%,${b} 25% 41.67%,${a} 41.67% 58.33%,${b} 58.33% 75%,${a} 75% 91.67%,${b} 91.67%)`;
+  return k.style === 'rayas' ? bars(90) : k.style === 'bandas' ? bars(180)
+    : k.style === 'mitades' ? `linear-gradient(90deg,${a} 50%,${b} 50%)`
+    : SHAPES[k.style] ? `url('data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -1 2 2' preserveAspectRatio='none'><rect x='-1' y='-1' width='2' height='2' fill='${a}'/><path d='${SHAPES[k.style]}' fill='${b}'/></svg>`).replace(/'/g, '%27')}') center/100% 100%` : a;
+}
+const kitVars = k => { const d = dorsalInk(k); return `--kit:${kitCss(k)};--ring:${k.ring};--ink-k:${d.ink};--halo:${d.halo}`; };
+// color de la estela y de las zonas: el más visible de los dos sobre la noche
+const teamGlow = teamId => { const k = kits[teamId]; return lum(k.base) < 0.05 && lum(k.ring) > lum(k.base) ? k.ring : k.base; };
+// equipos que se confunden con la superficie elegida
+function surfaceClash() {
+  const sf = surfById(surface), ground = sf.kind === 'planks' ? sf.tones[0] : sf.base;
+  const d = (a, b) => Math.hypot(...hexRgb(a).map((v, i) => v - hexRgb(b)[i]));
+  return ['mine', 'rival'].filter(t => d(teamGlow(t), ground) < 80 && d(kits[t].ring, ground) < 120);
+}
+function surfaceClashNote() {
+  const c = surfaceClash(); if (!c.length) return '';
+  const who = c.length === 2 ? 'Los dos equipos se confunden' : c[0] === 'mine' ? 'Mi equipo se confunde' : 'El rival se confunde';
+  return `<p class="clash">${who} con ${surfById(surface).name.toLowerCase()}. Cambia el color o la superficie.</p>`;
+}
+function kitsClash() {
+  const d = (a, b) => Math.hypot(...hexRgb(a).map((v, i) => v - hexRgb(b)[i]));
+  return d(teamGlow('mine'), teamGlow('rival')) < 90;
+}
+
+let state = buildPlay('ayuda');
 let result = null;
 const history = [];
 
@@ -1023,14 +1187,13 @@ function simulate(st0, rec0) {
 
 
 /* =========================================================
-   Render: cancha de noche, fichas, sombras de lámparas
+   Render: cancha, fichas y pelota (planas, sin luz simulada)
    ========================================================= */
 const NS = 'http://www.w3.org/2000/svg';
 const $ = s => document.querySelector(s);
 const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
 const SY = y => 40 - y;   // y del modelo (hacia arriba) -> y de pantalla
 const pt = p => `${p.x.toFixed(3)} ${SY(p.y).toFixed(3)}`;
-const LAMPS = [{ x: -5, y: -5 }, { x: 25, y: -5 }, { x: -5, y: 45 }, { x: 25, y: 45 }];
 
 // Íconos: Phosphor (bold / fill), copiados de @phosphor-icons/core 2.1.1
 const ICON = {
@@ -1039,61 +1202,17 @@ const ICON = {
   reset: 'M228,128a100,100,0,0,1-98.66,100H128a99.39,99.39,0,0,1-68.62-27.29,12,12,0,0,1,16.48-17.45,76,76,0,1,0-1.57-109c-.13.13-.25.25-.39.37L54.89,92H72a12,12,0,0,1,0,24H24a12,12,0,0,1-12-12V56a12,12,0,0,1,24,0V76.72L57.48,57.06A100,100,0,0,1,228,128Z',
   undo: 'M236,144a68.07,68.07,0,0,1-68,68H80a12,12,0,0,1,0-24h88a44,44,0,0,0,0-88H61l27.52,27.51a12,12,0,0,1-17,17l-48-48a12,12,0,0,1,0-17l48-48a12,12,0,1,1,17,17L61,76H168A68.08,68.08,0,0,1,236,144Z',
   zones: 'M10.05,110.42l112,64a12,12,0,0,0,11.9,0l112-64a12,12,0,0,0,0-20.84l-112-64a12,12,0,0,0-11.9,0l-112,64a12,12,0,0,0,0,20.84Zm118-60.6L215.81,100,128,150.18,40.19,100Zm122.42,92.23A12,12,0,0,1,246,158.42l-112,64a12,12,0,0,1-11.9,0l-112-64A12,12,0,1,1,22,137.58l106,60.6,106-60.6A12,12,0,0,1,250.42,142.05Z',
+  sliders: 'M40,92H70.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24H137.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24Zm64-24A12,12,0,1,1,92,80,12,12,0,0,1,104,68Zm112,96H201.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24h94.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24Zm-48,24a12,12,0,1,1,12-12A12,12,0,0,1,168,188Z',
   caret: 'M216.49,168.49a12,12,0,0,1-17,0L128,97,56.49,168.49a12,12,0,0,1-17-17l80-80a12,12,0,0,1,17,0l80,80A12,12,0,0,1,216.49,168.49Z',
 };
 const icon = k => `<svg class="ico" viewBox="0 0 256 256" aria-hidden="true"><path d="${ICON[k]}"/></svg>`;
 
-/* Pasto sintético: se genera una vez en un canvas (franjas de corte, grano, fibras y la luz de las cuatro lámparas). */
-function makeTurf() {
-  const ppm = 22, W = 24 * ppm, H = 44 * ppm;
-  const c = document.createElement('canvas'); c.width = W; c.height = H;
-  const g = c.getContext('2d');
-  g.fillStyle = '#28723a'; g.fillRect(0, 0, W, H);
-  for (let i = -1; i < 11; i++) {
-    g.fillStyle = i % 2 ? 'rgba(0,20,8,.07)' : 'rgba(255,255,230,.045)';
-    g.fillRect(0, (i * 4 + 2) * ppm, W, 4 * ppm);
-  }
-  const img = g.getImageData(0, 0, W, H), d = img.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const n = (Math.random() - 0.5) * 16;
-    d[i] += n * 0.7; d[i + 1] += n; d[i + 2] += n * 0.6;
-  }
-  g.putImageData(img, 0, 0);
-  g.lineCap = 'round';
-  for (let i = 0; i < 9000; i++) {
-    const x = Math.random() * W, y = Math.random() * H, a = (Math.random() - 0.5) * 0.9 - Math.PI / 2, l = 2 + Math.random() * 4;
-    g.strokeStyle = Math.random() < 0.5 ? 'rgba(170,230,160,.07)' : 'rgba(0,30,10,.09)';
-    g.lineWidth = 1;
-    g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
-  }
-  g.globalCompositeOperation = 'screen';
-  for (const L of LAMPS) {
-    const cx = (L.x + 2) * ppm, cy = (SY(L.y) + 2) * ppm;
-    const rg = g.createRadialGradient(cx, cy, 0, cx, cy, 34 * ppm);
-    rg.addColorStop(0, 'rgba(255,238,205,.22)'); rg.addColorStop(0.45, 'rgba(255,238,205,.05)'); rg.addColorStop(1, 'rgba(255,238,205,0)');
-    g.fillStyle = rg; g.fillRect(0, 0, W, H);
-  }
-  g.globalCompositeOperation = 'multiply';
-  const dg = g.createRadialGradient(12 * ppm, 22 * ppm, 2 * ppm, 12 * ppm, 22 * ppm, 26 * ppm);
-  dg.addColorStop(0, 'rgba(150,170,160,1)'); dg.addColorStop(1, 'rgba(255,255,255,1)');
-  g.fillStyle = dg; g.fillRect(0, 0, W, H);
-  return c.toDataURL('image/jpeg', 0.86);
-}
-
 function drawField() {
   const g = $('#field'); g.innerHTML = '';
-  const defs = $('#pitch defs');
-  if (!$('#tokShade')) {
-    const rg = el('radialGradient', { id: 'tokShade', cx: '.38', cy: '.32', r: '.75' }, defs);
-    el('stop', { offset: '0', 'stop-color': '#fff', 'stop-opacity': '.42' }, rg);
-    el('stop', { offset: '.45', 'stop-color': '#fff', 'stop-opacity': '0' }, rg);
-    el('stop', { offset: '1', 'stop-color': '#000', 'stop-opacity': '.34' }, rg);
-  }
-  const img = el('image', { x: -2, y: -2, width: 24, height: 44, preserveAspectRatio: 'none', opacity: 0 }, g);
-  img.setAttribute('href', makeTurf());
-  if (!reduceMotion.matches) img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: 'ease', fill: 'forwards' }); else img.setAttribute('opacity', 1);
-  if (reduceMotion.matches) img.setAttribute('opacity', 1); else setTimeout(() => img.setAttribute('opacity', 1), 270);
-  el('rect', { x: -2, y: -2, width: 24, height: 44, rx: 0.5, fill: 'none', stroke: 'rgba(225,240,232,.22)', 'stroke-width': 0.08 }, g);
+  // superficie elegida (plana, sin luz), luego las líneas encima
+  // esquinas redondeadas, como una tarjeta: el pasto se recorta con el mismo radio
+  if (!$('#turfClip')) el('rect', { x: -2, y: -2, width: 24, height: 44, rx: 1.2 }, el('clipPath', { id: 'turfClip' }, $('#pitch defs')));
+  drawTurf(true);
   const L = { fill: 'none', stroke: 'rgba(246,248,240,.8)', 'stroke-width': 0.12, 'stroke-linecap': 'round' };
   el('rect', { x: 0, y: 0, width: 20, height: 40, ...L }, g);
   el('line', { x1: 0, y1: 20, x2: 20, y2: 20, ...L }, g);
@@ -1106,12 +1225,39 @@ function drawField() {
     el('rect', { x: 8.5, y, width: 3, height: 1, fill: 'url(#net)' }, g);
     el('path', { d: gy === 0 ? 'M8.5 0 V-1 H11.5 V0' : 'M8.5 40 V41 H11.5 V40', fill: 'none', stroke: '#f4f6ef', 'stroke-width': 0.14, 'stroke-linejoin': 'round' }, g);
   }
-  for (const [x, y] of [[-1.7, -1.7], [21.7, -1.7], [-1.7, 41.7], [21.7, 41.7]]) {
-    el('circle', { cx: x, cy: y, r: 4.2, fill: 'url(#lampGlow)' }, g);
-    el('circle', { cx: x, cy: y, r: 0.2, fill: '#fff8ea' }, g);
+  // en la repetición la cancha se atenúa para que las estelas se lean
+  el('rect', { id: 'dim', x: -2, y: -2, width: 24, height: 44, rx: 1.2, fill: '#020806', opacity: 0, 'pointer-events': 'none' }, g);
+}
+/* Dibuja la superficie elegida debajo de las líneas; la nueva entra fundiéndose sobre la anterior (240 ms). */
+function drawTurf(fade) {
+  // la nueva siempre va encima de la última; al terminar el fundido se retiran todas las anteriores (aunque se toque rápido)
+  const g = $('#field'), sf = surfById(surface), olds = [...g.querySelectorAll('.turf')], old = olds[olds.length - 1];
+  const t = el('g', { class: 'turf', 'clip-path': 'url(#turfClip)' });
+  g.insertBefore(t, old ? old.nextSibling : g.firstChild);
+  const R = (x, y, w, h, fill) => el('rect', { x, y, width: w, height: h, fill }, t);
+  if (sf.kind === 'court') { R(-2, -2, 24, 44, sf.out); R(0, 0, 20, 40, sf.base); }
+  else if (sf.kind === 'planks') {
+    for (let i = 0, x = -2; x < 22; i++, x += 0.5) R(x, -2, 0.5, 44, sf.tones[i % 3]);
+    for (let x = -1.5; x < 22; x += 0.5) el('line', { x1: x, y1: -2, x2: x, y2: 42, stroke: 'rgba(40,20,5,.14)', 'stroke-width': 0.02 }, t);
+  } else {
+    R(-2, -2, 24, 44, sf.base);
+    if (sf.kind === 'stripes') for (let i = 0, y = -2; y < 42; i++, y += sf.step) if (i % 2) R(-2, y, 24, sf.step, sf.alt);
+    if (sf.kind === 'slabs') {
+      const J = { stroke: 'rgba(0,0,0,.24)', 'stroke-width': 0.05 };
+      // juntas desplazadas medio paño: no coinciden con el eje ni con la línea central
+      for (let x = 2.5; x < 22; x += sf.step) el('line', { x1: x, y1: -2, x2: x, y2: 42, ...J }, t);
+      for (let y = 2.5; y < 42; y += sf.step) el('line', { x1: -2, y1: y, x2: 22, y2: y, ...J }, t);
+    }
   }
-  // en la repetición se bajan las lámparas para que las estelas brillen
-  el('rect', { id: 'dim', x: -2, y: -2, width: 24, height: 44, fill: '#020806', opacity: 0, 'pointer-events': 'none' }, g);
+  const clear = () => olds.forEach(o => o.remove());
+  if (fade && !old && reduceMotion.matches) return;
+  if (fade) t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: old ? 240 : 260, easing: 'ease' }).onfinish = clear;   // un fundido, también con movimiento reducido
+  else clear();
+}
+function setSurface(id) {
+  surface = surfById(id).id;
+  try { localStorage.setItem('pambol.surface', surface); } catch (e) { /* sin almacenamiento */ }
+  drawTurf(true);
 }
 function setDim(on) {
   const d = $('#dim'); if (!d) return;
@@ -1120,76 +1266,62 @@ function setDim(on) {
   if (!reduceMotion.matches) d.animate([{ opacity: from }, { opacity: to }], { duration: on ? 320 : 220, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
 }
 
-const kitFill = p => p.team === 'mine' ? (p.gk ? 'var(--mine-gk)' : null) : (p.gk ? 'var(--rival-gk)' : 'var(--rival)');
+/* Camiseta de una ficha (r 0,84): estilo, contorno visible y dorsal con la tinta que mejor se lee. */
+function paintKit(g, teamId, gk, number) {
+  g.innerHTML = '';
+  const k = kitColors(teamId, gk), d = dorsalInk(k);
+  const cloth = el('g', { 'clip-path': 'url(#tokClip)' }, g);
+  el('circle', { r: 0.84, fill: k.base }, cloth);
+  if (k.style === 'rayas') for (let j = 0; j < 4; j++) el('rect', { x: -0.98 + j * 0.56, y: -1, width: 0.28, height: 2, fill: k.ring }, cloth);
+  if (k.style === 'bandas') for (let j = 0; j < 4; j++) el('rect', { x: -1, y: -0.98 + j * 0.56, width: 2, height: 0.28, fill: k.ring }, cloth);
+  if (k.style === 'mitades') el('rect', { x: 0, y: -1, width: 1, height: 2, fill: k.ring }, cloth);
+  if (SHAPES[k.style]) el('path', { d: SHAPES[k.style], fill: k.ring }, cloth);
+  el('circle', { r: 0.76, fill: 'none', stroke: k.ring, 'stroke-width': 0.16 }, g);
+  el('circle', { r: 0.855, fill: 'none', stroke: 'rgba(0,0,0,.5)', 'stroke-width': 0.045 }, g);
+  const t = el('text', { class: 'n', y: 0.03 }, g);
+  Object.assign(t.style, { fill: d.ink, stroke: d.halo, strokeWidth: d.w + 'px', paintOrder: 'stroke', strokeLinejoin: 'round' });
+  t.textContent = number;
+}
+function applyKits() {
+  for (const p of state.players) if (nodes[p.id]) paintKit(nodes[p.id].kitG, p.team, p.gk, p.number);
+  const rs = document.documentElement.style;
+  rs.setProperty('--mine', teamGlow('mine')); rs.setProperty('--rival', teamGlow('rival'));
+  try { localStorage.setItem('pambol.kits', JSON.stringify(kits)); } catch (e) { /* sin almacenamiento */ }
+}
 const nodes = {};
-const liftCur = {}, liftGoal = {};
 
 function buildPlayers() {
-  for (const id of ['#players', '#arrows', '#tips', '#shadows', '#ballG']) $(id).innerHTML = '';
-  const gp = $('#players'), ga = $('#arrows'), gt = $('#tips'), gs = $('#shadows');
+  for (const id of ['#players', '#arrows', '#tips', '#ballG']) $(id).innerHTML = '';
+  const gp = $('#players'), ga = $('#arrows'), gt = $('#tips');
   state.players.forEach((p, i) => {
-    const sh = el('g', {}, gs);
-    const shadows = LAMPS.map(() => el('ellipse', { rx: 0.84, ry: 0.66, fill: '#021008' }, sh));
     const g = el('g', { class: 'tok', 'data-hit': 'player', 'data-id': p.id }, gp);
     el('circle', { r: 1.35, fill: 'transparent' }, g);
     const ring = el('g', { opacity: 0 }, g);
-    el('circle', { r: 1.22, fill: 'rgba(255,140,26,.14)', stroke: 'var(--cone)', 'stroke-width': 0.12 }, ring);
-    const tu = el('text', { x: -1.5, y: 0.05, 'text-anchor': 'end', style: 'text-anchor:end;font:italic 600 .78px var(--body)', fill: 'var(--cone-2)', 'dominant-baseline': 'central' }, ring);
+    el('circle', { r: 1.22, fill: 'rgba(255,159,10,.14)', stroke: 'var(--cone)', 'stroke-width': 0.12 }, ring);
+    const tu = el('text', { x: -1.5, y: 0.05, 'text-anchor': 'end', style: 'text-anchor:end;font:700 .8px var(--body);paint-order:stroke;stroke-linejoin:round', fill: '#fff', stroke: 'rgba(10,10,12,.7)', 'stroke-width': 0.18, 'dominant-baseline': 'central' }, ring);
     tu.textContent = 'tú';
     const body = el('g', { class: 'body' }, g);
-    const kitG = el('g', { 'clip-path': 'url(#tokClip)' }, body);
-    if (p.team === 'mine' && !p.gk) {
-      el('circle', { r: 0.84, fill: 'var(--mine-w)' }, kitG);
-      for (let j = 0; j < 6; j++) el('rect', { x: -0.9 + j * 0.3, y: -1, width: 0.15, height: 2, fill: 'var(--mine)' }, kitG);
-    } else el('circle', { r: 0.84, fill: kitFill(p) }, kitG);
-    el('circle', { r: 0.84, fill: 'url(#tokShade)' }, body);
-    el('circle', { r: 0.81, fill: 'none', stroke: 'rgba(0,0,0,.42)', 'stroke-width': 0.07 }, body);
-    const t = el('text', { class: 'n', y: 0.03 }, body);
-    if (p.team === 'mine') Object.assign(t.style, { fill: '#fff', stroke: 'rgba(55,6,14,.85)', strokeWidth: '.16px', paintOrder: 'stroke' });
-    else t.style.fill = p.gk ? '#1f2c06' : 'var(--rival-ink)';
-    t.textContent = p.number;
+    const kitG = el('g', {}, body);
+    paintKit(kitG, p.team, p.gk, p.number);
     const pips = el('g', {}, g);
     for (let k = 0; k < 3; k++) el('rect', { x: 1.02 + k * 0.19, y: 0.58 - (0.2 + k * 0.15), width: 0.12, height: 0.2 + k * 0.15, rx: 0.03 }, pips);
-    const a = el('g', {}, ga);
-    const wide = el('path', { fill: '#fff', opacity: 0.2 }, a);
-    const core = el('path', { fill: '#fff', opacity: 0.92 }, a);
-    const speed = el('g', { opacity: 0.5 }, a);
+    // flecha ligera: línea fina y punta pequeña; la velocidad se lee por el largo
+    const a = el('g', { 'stroke-linecap': 'round' }, ga);
+    const shade = el('path', { fill: 'none', stroke: 'rgba(3,14,8,.32)', 'stroke-width': 0.24 }, a);
+    const line = el('path', { fill: 'none', stroke: '#fff', 'stroke-width': 0.1, opacity: 0.92 }, a);
+    const head = el('path', { fill: '#fff', opacity: 0.92, stroke: 'rgba(3,14,8,.32)', 'stroke-width': 0.05, 'paint-order': 'stroke', 'stroke-linejoin': 'round' }, a);
     const tip = el('g', { class: 'tip', 'data-hit': 'tip', 'data-id': p.id }, gt);
     el('circle', { r: 0.85, fill: 'transparent' }, tip);
-    const knob = el('circle', { r: 0.3, fill: '#fff', stroke: 'rgba(0,0,0,.35)', 'stroke-width': 0.06 }, tip);
-    nodes[p.id] = { g, body, ring, pips, a, wide, core, speed, tip, knob, shadows, i };
-    liftCur[p.id] = liftCur[p.id] || 0; liftGoal[p.id] = 0;
+    const knob = el('circle', { r: 0.24, fill: 'rgba(255,255,255,.35)', stroke: 'rgba(0,0,0,.35)', 'stroke-width': 0.06, 'stroke-dasharray': '.1 .08' }, tip);
+    nodes[p.id] = { g, body, kitG, ring, pips, a, shade, line, head, tip, knob, i };
   });
-  const sb = el('g', {}, $('#shadows'));
-  nodes.ballShadows = LAMPS.map(() => el('ellipse', { rx: 0.42, ry: 0.34, fill: '#021008' }, sb));
   const b = el('g', { 'data-hit': 'ball', style: 'cursor:pointer' }, $('#ballG'));
   el('circle', { r: 0.75, fill: 'transparent' }, b);
   const inner = el('g', {}, b);
   el('circle', { r: 0.42, fill: '#f6f5ef' }, inner);
   el('path', { d: 'M0 -.16 L.15 -.05 L.09 .13 L-.09 .13 L-.15 -.05Z', fill: '#171a1c' }, inner);
   el('path', { d: 'M0 -.42 L0 -.16 M.15 -.05 L.4 -.13 M.09 .13 L.24 .34 M-.09 .13 L-.24 .34 M-.15 -.05 L-.4 -.13', stroke: '#171a1c', 'stroke-width': 0.04 }, inner);
-  el('circle', { r: 0.42, fill: 'url(#tokShade)' }, inner);
   nodes.ball = b; nodes.ballInner = inner;
-}
-
-/* Cuatro sombras por objeto, una por lámpara; al levantar una ficha se alargan y se aclaran. */
-function placeShadows(list, pos, r, lift = 0) {
-  list.forEach((e, k) => {
-    const L = LAMPS[k], u = V.unit(V.sub(pos, L));
-    const off = r * 0.42 + lift * 0.55;
-    const c = V.add(pos, V.mul(u, off));
-    const ang = Math.atan2(-u.y, u.x) * 180 / Math.PI;
-    e.setAttribute('cx', c.x.toFixed(3)); e.setAttribute('cy', SY(c.y).toFixed(3));
-    e.setAttribute('rx', (r * (1.05 + lift * 0.25)).toFixed(3)); e.setAttribute('ry', (r * (0.8 + lift * 0.1)).toFixed(3));
-    e.setAttribute('transform', `rotate(${ang.toFixed(1)} ${c.x.toFixed(3)} ${SY(c.y).toFixed(3)})`);
-    e.setAttribute('opacity', (0.17 - lift * 0.07).toFixed(3));
-  });
-}
-
-function wedge(s, e, w) {
-  const d = V.unit(V.sub(e, s)), n = { x: -d.y, y: d.x };
-  const a = V.add(s, V.mul(n, w)), b = V.sub(s, V.mul(n, w)), back = V.sub(s, V.mul(d, w * 0.9));
-  return `M${pt(a)} L${pt(e)} L${pt(b)} Q${pt(back)} ${pt(a)} Z`;
 }
 
 function renderPlayers(positions) {
@@ -1200,29 +1332,20 @@ function renderPlayers(positions) {
     n.ring.setAttribute('opacity', p.id === state.meId ? 1 : 0);
     [...n.pips.children].forEach((r, i) => r.setAttribute('fill', i < p.intensity ? 'rgba(255,255,255,.95)' : 'rgba(0,0,0,.32)'));
     n.pips.style.display = editing ? '' : 'none';
-    placeShadows(n.shadows, pos, 0.84, liftCur[p.id] || 0);
     n.a.style.display = editing ? '' : 'none';
     n.tip.style.display = editing ? '' : 'none';
     if (!editing) continue;
     const moving = p.speed !== 'parado';
     const d = V.len(p.dir) > 0.1 ? p.dir : { x: 0, y: p.team === 'mine' ? 1 : -1 };
     const L = CONFIG.arrowLen[p.speed];
-    const s = V.add(p.pos, V.mul(d, 0.98)), e = V.add(p.pos, V.mul(d, L + 0.25));
-    n.wide.setAttribute('d', moving ? wedge(s, e, 0.48) : '');
-    n.core.setAttribute('d', moving ? wedge(s, V.sub(e, V.mul(d, 0.1)), 0.15) : '');
-    n.speed.innerHTML = '';
-    if (p.speed === 'media' || p.speed === 'sprint') {
-      const nn = { x: -d.y, y: d.x }, offs = p.speed === 'sprint' ? [-0.42, 0, 0.42] : [-0.3, 0.3], len = p.speed === 'sprint' ? 1.7 : 1.05;
-      for (const k of offs) {
-        const a0 = V.add(V.sub(p.pos, V.mul(d, 1.02)), V.mul(nn, k)), a1 = V.add(V.sub(p.pos, V.mul(d, 1.02 + len * (k ? 0.8 : 1))), V.mul(nn, k));
-        el('path', { d: wedge(a0, a1, 0.07), fill: '#fff' }, n.speed);
-      }
-    }
-    const tipPos = moving ? e : V.add(p.pos, V.mul(d, 1.55));
+    const s = V.add(p.pos, V.mul(d, 1.02)), e = V.add(p.pos, V.mul(d, L + 0.25));
+    const neck = V.sub(e, V.mul(d, 0.4)), nn = { x: -d.y * 0.24, y: d.x * 0.24 };
+    const shaft = moving ? `M${pt(s)} L${pt(V.sub(e, V.mul(d, 0.2)))}` : '';
+    n.shade.setAttribute('d', shaft); n.line.setAttribute('d', moving ? `M${pt(s)} L${pt(neck)}` : '');
+    n.head.setAttribute('d', moving ? `M${pt(e)} L${pt(V.add(neck, nn))} L${pt(V.sub(neck, nn))} Z` : '');
+    const tipPos = moving ? V.sub(e, V.mul(d, 0.2)) : V.add(p.pos, V.mul(d, 1.55));
     n.tip.setAttribute('transform', `translate(${tipPos.x.toFixed(3)} ${SY(tipPos.y).toFixed(3)})`);
-    n.knob.setAttribute('r', moving ? 0.3 : 0.24);
-    n.knob.setAttribute('fill', moving ? '#fff' : 'rgba(255,255,255,.35)');
-    n.knob.setAttribute('stroke-dasharray', moving ? 'none' : '.1 .08');
+    n.knob.style.display = moving ? 'none' : '';
   }
 }
 
@@ -1235,38 +1358,18 @@ function ballDrawPos(st) {
 function renderBall(bp, lifted) {
   nodes.ball.setAttribute('transform', `translate(${bp.x.toFixed(3)} ${SY(bp.y).toFixed(3)})`);
   nodes.ballInner.classList.toggle('ballup', !!lifted);
-  placeShadows(nodes.ballShadows, bp, 0.42, lifted ? 0.5 : 0);
-}
-
-/* animación de levantar / soltar fichas (sombras): aproximación exponencial, interrumpible */
-let liftRaf = 0, liftLast = 0;
-function setLift(id, v) {
-  liftGoal[id] = v;
-  if (reduceMotion.matches) { liftCur[id] = v; return; }
-  if (!liftRaf) { liftLast = performance.now(); liftRaf = requestAnimationFrame(liftStep); }
-}
-function liftStep(now) {
-  const dt = Math.min(0.05, (now - liftLast) / 1000); liftLast = now;
-  let busy = false;
-  for (const id in liftGoal) {
-    const g = liftGoal[id], c = liftCur[id] || 0;
-    if (Math.abs(g - c) < 0.01) { liftCur[id] = g; continue; }
-    liftCur[id] = c + (g - c) * (1 - Math.exp(-dt / (g > c ? 0.05 : 0.08)));
-    busy = true;
-    const p = byId(state, id); if (p && !playback) placeShadows(nodes[id].shadows, p.pos, 0.84, liftCur[id]);
-  }
-  liftRaf = busy ? requestAnimationFrame(liftStep) : 0;
 }
 
 function renderKits() {
   const wrap = $('#kits'); wrap.innerHTML = '';
   for (const p of state.players.filter(p => p.team === 'mine')) {
     const b = document.createElement('button');
-    b.className = 'kit' + (p.gk ? ' gk' : '');
+    b.className = 'kit';
+    b.style.cssText = kitVars(kitColors('mine', p.gk));
     b.setAttribute('aria-pressed', p.id === state.meId);
     b.setAttribute('aria-label', `Soy el ${p.number}${p.gk ? ', portero' : ''}`);
     b.textContent = p.number;
-    b.onclick = () => { if (playback) return; pushHistory(); state.meId = p.id; changed(true); };
+    b.onclick = () => { if (playback) return; finishSlide(); pushHistory(); state.meId = p.id; changed(true); };
     wrap.appendChild(b);
   }
 }
@@ -1296,25 +1399,24 @@ function footprints(g, from, to, animate) {
     const fp = el('g', { transform: `translate(${c.x.toFixed(3)} ${SY(c.y).toFixed(3)}) rotate(${ang.toFixed(1)})` }, g);
     const inner = el('g', { class: animate ? 'step' : '' }, fp);
     if (animate) inner.style.animationDelay = (k * 45) + 'ms';
-    el('ellipse', { cx: 0, cy: -0.08, rx: 0.17, ry: 0.27, fill: 'var(--cone)', opacity: 0.92 }, inner);
-    el('ellipse', { cx: 0, cy: 0.3, rx: 0.13, ry: 0.11, fill: 'var(--cone)', opacity: 0.92 }, inner);
+    el('ellipse', { cx: 0, cy: -0.08, rx: 0.17, ry: 0.27, fill: 'var(--cone)', stroke: 'rgba(20,10,0,.45)', 'stroke-width': 0.04, opacity: 0.95 }, inner);
+    el('ellipse', { cx: 0, cy: 0.3, rx: 0.13, ry: 0.11, fill: 'var(--cone)', stroke: 'rgba(20,10,0,.45)', 'stroke-width': 0.04, opacity: 0.95 }, inner);
   }
   return k;
 }
 function buildCone(parent, label) {
   const g = el('g', {}, parent);
-  const shadows = LAMPS.map(() => el('ellipse', { fill: '#021008' }, g));
   const body = el('g', {}, g);
-  el('rect', { x: -0.56, y: -0.56, width: 1.12, height: 1.12, rx: 0.2, fill: '#d9610a' }, body);
+  el('rect', { x: -0.56, y: -0.56, width: 1.12, height: 1.12, rx: 0.2, fill: '#d97a00' }, body);
   el('circle', { r: 0.43, fill: 'var(--cone)' }, body);
   el('circle', { r: 0.28, fill: 'none', stroke: '#fff6ea', 'stroke-width': 0.1 }, body);
   el('circle', { r: 0.12, fill: '#ffc68a' }, body);
-  if (!label) return { g, body, shadows };
+  if (!label) return { g, body };
   const chip = el('g', { class: 'svgchip', transform: 'translate(0 -1.45)' }, body);
   const w = label.length * 0.36 + 0.8;
-  el('rect', { x: -w / 2, y: -0.45, width: w, height: 0.9, rx: 0.45, fill: 'rgba(9,15,14,.9)' }, chip);
+  el('rect', { x: -w / 2, y: -0.45, width: w, height: 0.9, rx: 0.45, fill: 'rgba(36,36,38,.92)' }, chip);
   const t = el('text', { 'text-anchor': 'middle', style: 'text-anchor:middle', fill: '#fff' }, chip); t.textContent = label;
-  return { g, body, shadows };
+  return { g, body };
 }
 
 let geo = null, shownPt = null, goalPt = null, followRaf = 0, followLast = 0;
@@ -1342,7 +1444,7 @@ function renderRec(animate) {
   if (r.mode === 'sin' && r.alt) el('path', { d: `M${pt(me.pos)} L${pt(r.alt.target)}`, stroke: 'rgba(235,242,238,.4)', 'stroke-width': 0.08, 'stroke-dasharray': '.3 .25', fill: 'none' }, g);
   if (r.mode === 'sin' && r.kind === 'jalar' && r.marker && r.markerTo) {
     el('path', { d: `M${pt(r.marker.pos)} L${pt(r.markerTo)}`, stroke: 'rgba(255,255,255,.7)', 'stroke-width': 0.08, 'stroke-dasharray': '.2 .2', fill: 'none' }, g);
-    if (r.pass) { const m = V.lerp(r.pass.from, r.pass.to, 0.55); el('circle', { cx: m.x, cy: SY(m.y), r: 2.2, fill: 'rgba(255,140,26,.1)', stroke: 'rgba(255,140,26,.4)', 'stroke-width': 0.06 }, g); }
+    if (r.pass) { const m = V.lerp(r.pass.from, r.pass.to, 0.55); el('circle', { cx: m.x, cy: SY(m.y), r: 2.2, fill: 'rgba(255,159,10,.1)', stroke: 'rgba(255,159,10,.4)', 'stroke-width': 0.06 }, g); }
   }
   if (r.mode === 'con' && r.kind === 'proteger') el('circle', { cx: me.pos.x, cy: SY(me.pos.y), r: 1.8, fill: 'none', stroke: 'var(--cone)', 'stroke-width': 0.1, 'stroke-dasharray': '.4 .3' }, g);
 
@@ -1372,18 +1474,8 @@ function applyGeo(t, animateSteps = false) {
   let n = 0;
   if (geo.steps) n = footprints(geo.steps, geo.me, t, animateSteps);
   if (geo.pass) geo.pass.setAttribute('d', `M${pt(geo.passFrom)} L${pt(geo.passTo || t)}`);
-  if (geo.cone) { geo.cone.g.setAttribute('transform', `translate(${t.x.toFixed(3)} ${SY(t.y).toFixed(3)})`); placeShadowsLocal(geo.cone.shadows, t, 0.62); }
+  if (geo.cone) { geo.cone.g.setAttribute('transform', `translate(${t.x.toFixed(3)} ${SY(t.y).toFixed(3)})`); }
   return n;
-}
-// sombras de un objeto dibujado dentro de un grupo ya trasladado
-function placeShadowsLocal(list, pos, r) {
-  list.forEach((e, k) => {
-    const u = V.unit(V.sub(pos, LAMPS[k])), c = V.mul(u, r * 0.5), ang = Math.atan2(-u.y, u.x) * 180 / Math.PI;
-    e.setAttribute('cx', c.x.toFixed(3)); e.setAttribute('cy', (-c.y).toFixed(3));
-    e.setAttribute('rx', (r * 1.1).toFixed(3)); e.setAttribute('ry', (r * 0.8).toFixed(3));
-    e.setAttribute('transform', `rotate(${ang.toFixed(1)} ${c.x.toFixed(3)} ${(-c.y).toFixed(3)})`);
-    e.setAttribute('opacity', 0.17);
-  });
 }
 // El destino se desliza hacia el nuevo punto (~70 ms), interrumpible en cualquier momento.
 function startFollow() {
@@ -1421,7 +1513,9 @@ const isDesk = () => matchMedia('(min-width: 960px)').matches;
 const MODE_LABEL = { con: 'Con balón', sin: 'Sin balón', def: 'Defensa', suelta: 'Pelota suelta' };
 function splitVal(v) { const m = String(v).match(/^(.*?)\s*(s|m|%|pts)$/); return m ? [m[1], m[2]] : [v, '']; }
 function renderSheet() {
+  if (sheetView === 'setup') return renderSetup();
   const r = result, c = $('#sheet');
+  c.classList.remove('setup'); c.onclick = null; c.onkeydown = null; c.setAttribute('aria-live', 'polite');
   if (!r) { c.innerHTML = ''; return; }
   const [hv, hu] = splitVal(r.stats[0][1]);
   const rest = r.stats.slice(1).map(([k, v, cl]) => `${k.toLowerCase()} <b class="${cl === 'bad' ? 'bad' : ''}">${String(v).toLowerCase()}</b>`).join(', ');
@@ -1440,7 +1534,8 @@ function renderSheet() {
       <button class="go" id="bPlay">${icon('play')}Animar</button>
       <button class="sq" id="bZones" aria-pressed="${showZones}" aria-label="Ver zonas" title="Ver zonas">${icon('zones')}</button>
       <button class="sq" id="bUndo" ${history.length ? '' : 'disabled'} aria-label="Deshacer" title="Deshacer">${icon('undo')}</button>
-      <button class="sq" id="bReset" aria-label="Volver al escenario" title="Volver al escenario">${icon('reset')}</button>
+      <button class="sq" id="bReset" aria-label="Volver al escenario" title="Volver a: ${playById(state.play).name}">${icon('reset')}</button>
+      <button class="sq" id="bSetup" aria-label="Ajustes: jugadas, equipos y cancha" title="Ajustes: jugadas, equipos y cancha">${icon('sliders')}</button>
     </div>
     <button class="morebtn" id="bMore" aria-expanded="${sheetOpen}">${icon('caret')}${sheetOpen ? 'Menos' : 'Por qué'}</button>
     <div class="more"><div>
@@ -1453,11 +1548,12 @@ function renderSheet() {
   $('#bPlay').onclick = startPlayback;
   $('#bZones').onclick = () => { showZones = !showZones; renderZones(); renderSheet(); };
   $('#bUndo').onclick = undo;
-  $('#bReset').onclick = () => { pushHistory(); state = SCENARIO.build(); buildPlayers(); changed(true); };
+  $('#bReset').onclick = () => goToPlay(state.play);
+  $('#bSetup').onclick = () => openSetup();
   measurePeek();
 }
 function measurePeek() {
-  if (isDesk() || sheetOpen) return;
+  if (isDesk() || sheetOpen || sheetView !== 'result') return;
   const h = $('#sheet').offsetHeight;
   if (h) document.documentElement.style.setProperty('--peek', h + 'px');
 }
@@ -1472,6 +1568,8 @@ function screenOf(p) {
 function toast(pos, html) {
   if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast'; $('#stage').appendChild(toastEl); }
   const s = screenOf(V.add(pos, { x: 0, y: -1.6 }));
+  // en el móvil la hoja tapa la parte baja de la cancha: el aviso nunca queda debajo de ella
+  if (!isDesk()) s.y = Math.max(8, Math.min(s.y, $('#sheet').offsetTop - 40));
   toastEl.innerHTML = html; toastEl.style.left = s.x + 'px'; toastEl.style.top = s.y + 'px';
   toastEl.classList.remove('on'); void toastEl.offsetWidth; toastEl.classList.add('on');
   clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), 1100);
@@ -1484,16 +1582,150 @@ function changed(animate) {
   pending = requestAnimationFrame(() => {
     result = analyze(state);
     renderKits();
-    renderPlayers();
-    renderBall(ballDrawPos(state), picking);
+    if (slide) {
+      // mientras las fichas se deslizan, la recomendación espera a que lleguen
+      renderPlayers(slide.cur); renderBall(slide.ballCur, false);
+      for (const id of ['#rec', '#coneL', '#marks']) $(id).innerHTML = '';
+      geo = null; recKey = '';
+    } else {
+      renderPlayers();
+      renderBall(ballDrawPos(state), picking);
+      renderRec(animate);
+    }
     renderZones();
-    renderRec(animate);
     renderSheet();
-    window.__pambol = { state, result };
+    window.__pambol = { state, result, kits };
   });
 }
 function pushHistory() { history.push(JSON.stringify(state)); if (history.length > 30) history.shift(); }
-function undo() { if (!history.length || playback) return; state = JSON.parse(history.pop()); buildPlayers(); changed(true); }
+function undo() { if (!history.length || playback) return; finishSlide(true); state = JSON.parse(history.pop()); buildPlayers(); changed(true); }
+
+/* --- cambio de jugada: cada ficha va a su sitio con un muelle críticamente amortiguado (respuesta 0,4 s, sin rebote).
+   Si se elige otra jugada a medio camino, sale desde donde está y con la velocidad que lleva. --- */
+let slide = null, slideRaf = 0;
+const SLIDE_W = 2 * Math.PI / 0.4;
+function goToPlay(id) {
+  if (playback) { playback = null; setDim(false); $('#expo').innerHTML = ''; }
+  if (picking) { picking = false; $('#stage').classList.remove('picking'); }
+  const cur = {}, vel = {};
+  for (const p of state.players) { cur[p.id] = slide ? slide.cur[p.id] : { ...p.pos }; vel[p.id] = slide ? slide.vel[p.id] : { x: 0, y: 0 }; }
+  const ballCur = slide ? slide.ballCur : { ...ballDrawPos(state) }, ballVel = slide ? slide.ballVel : { x: 0, y: 0 };
+  pushHistory();
+  state = buildPlay(id);
+  const me = meOf(state);
+  if (reduceMotion.matches) {
+    slide = null; changed(true);
+    $('#players').animate([{ opacity: 0.2 }, { opacity: 1 }], { duration: 200, easing: 'ease' });
+    setTimeout(() => toast(me.pos, `Tú eres el <b>${me.number}</b>`), 60);
+    return;
+  }
+  slide = { cur, vel, ballCur, ballVel, last: performance.now() };
+  changed(true);
+  if (!slideRaf) slideRaf = requestAnimationFrame(slideStep);
+}
+function slideStep(now) {
+  if (!slide) { slideRaf = 0; return; }
+  let dt = Math.min(0.05, (now - slide.last) / 1000); slide.last = now;
+  const spring = (x, v, to) => {
+    for (let h = dt; h > 1e-6; h -= 1 / 120) {
+      const s = Math.min(h, 1 / 120);
+      const a = { x: -SLIDE_W * SLIDE_W * (x.x - to.x) - 2 * SLIDE_W * v.x, y: -SLIDE_W * SLIDE_W * (x.y - to.y) - 2 * SLIDE_W * v.y };
+      v.x += a.x * s; v.y += a.y * s; x.x += v.x * s; x.y += v.y * s;
+    }
+    return V.dist(x, to) < 0.01 && V.len(v) < 0.05;
+  };
+  let done = true;
+  for (const p of state.players) done = spring(slide.cur[p.id], slide.vel[p.id], p.pos) && done;
+  done = spring(slide.ballCur, slide.ballVel, ballDrawPos(state)) && done;
+  renderPlayers(slide.cur); renderBall(slide.ballCur, false);
+  if (done) { slideRaf = 0; finishSlide(); return; }
+  slideRaf = requestAnimationFrame(slideStep);
+}
+function finishSlide(quiet) {
+  if (!slide) return;
+  slide = null; cancelAnimationFrame(slideRaf); slideRaf = 0;
+  renderPlayers(); renderBall(ballDrawPos(state), picking); renderRec(true);
+  if (!quiet) { const me = meOf(state); toast(me.pos, `Tú eres el <b>${me.number}</b>`); }
+}
+
+/* --- panel Montar: jugadas, camisetas e intensidad por equipo --- */
+let sheetView = 'result', setupTab = 'jugadas';
+function swapSheet(fn) {
+  const c = $('#sheet'), h0 = c.offsetHeight;
+  fn();
+  const h1 = c.offsetHeight;
+  if (reduceMotion.matches) { c.animate([{ opacity: 0.5 }, { opacity: 1 }], { duration: 160, easing: 'ease' }); return; }
+  // en el móvil la hoja crece desde abajo; si encoge, solo se funde el contenido
+  if (!isDesk() && h1 > h0) c.animate([{ transform: `translateY(${h1 - h0}px)` }, { transform: 'none' }], { duration: 300, easing: 'cubic-bezier(0.32, 0.72, 0, 1)' });
+  else c.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 180, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
+}
+function openSetup(tab) { if (playback) return; if (tab) setupTab = tab; swapSheet(() => { sheetView = 'setup'; renderSheet(); }); }
+function closeSetup() { swapSheet(() => { sheetView = 'result'; renderSheet(); }); }
+function previewSvg(t) {
+  const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '-1 -1 2 2'); s.setAttribute('aria-hidden', 'true');
+  paintKit(el('g', {}, s), t, false, t === 'mine' ? meOf(state).number : 8);
+  return s.outerHTML;
+}
+function renderSetup() {
+  const c = $('#sheet'), focusKey = document.activeElement?.dataset?.k;
+  c.classList.remove('open'); c.classList.add('setup');
+  c.setAttribute('aria-live', 'off');   // el panel se reescribe en cada toque: no se vuelve a anunciar entero
+  const t = setupTab;
+  let body;
+  if (t === 'cancha') {
+    body = `<fieldset class="grp"><legend>Superficie</legend><div class="surfs">${SURFACES.map(sf =>
+      `<button class="surf" data-k="surf-${sf.id}" data-surface="${sf.id}" aria-pressed="${surface === sf.id}"><i style="background:${sf.css}"></i>${sf.name}</button>`).join('')}</div></fieldset>${surfaceClashNote()}`;
+  } else if (t === 'jugadas') {
+    body = `<ul class="plays">${PLAYS.map(pl => `<li><button class="play" data-k="play-${pl.id}" data-play="${pl.id}" aria-pressed="${state.play === pl.id}">
+      <b>${pl.name}</b><span>${MODE_LABEL[detectMode(pl.build())]}</span></button></li>`).join('')}</ul>`;
+  } else {
+    const k = kits[t], ints = state.players.filter(p => p.team === t).map(p => p.intensity), same = ints.every(v => v === ints[0]) ? ints[0] : 0;
+    const swatches = (field, cur) => `<div class="sws">${COLORS.map(([n, h]) =>
+      `<button class="sw" data-k="${field}-${n}" data-${field}="${h}" aria-pressed="${cur === h}" aria-label="${cap(n)}" title="${cap(n)}"><i style="--c:${h}"></i></button>`).join('')}</div>`;
+    body = `
+      <fieldset class="grp"><legend>Camiseta</legend><div class="seg styles"><div class="prev">${previewSvg(t)}</div>${STYLES.map(([s, l]) =>
+        `<button class="stl" data-k="style-${s}" data-style="${s}" aria-pressed="${k.style === s}"><span class="dot" style="${kitVars({ ...k, style: s })}"></span>${l}</button>`).join('')}</div></fieldset>
+      <fieldset class="grp"><legend>Color</legend>${swatches('base', k.base)}</fieldset>
+      ${kitsClash() ? '<p class="clash">Los dos equipos se ven parecidos en la cancha. Cambia el color de uno.</p>' : ''}${surfaceClashNote()}
+      <fieldset class="grp"><legend>Contorno</legend>${swatches('ring', k.ring)}</fieldset>
+      <fieldset class="grp"><legend>Intensidad de ${t === 'mine' ? 'todo mi equipo' : 'todo el rival'}${same ? '' : ', ahora mezclada'}</legend><div class="seg">${[1, 2, 3].map(i =>
+        `<button data-k="int-${i}" data-int="${i}" aria-pressed="${same === i}">${i}<small>${CONFIG.intensity[i].label.toLowerCase()}</small></button>`).join('')}</div></fieldset>`;
+  }
+  c.innerHTML = `
+    <button class="grab" id="bGrab" aria-label="Cerrar ajustes"></button>
+    <div class="sethead"><h2 class="title">Ajustes</h2><button class="txt" id="bDone" data-k="done">Listo</button></div>
+    <div class="tabs" role="tablist">${[['jugadas', 'Jugadas'], ['mine', 'Mi equipo'], ['rival', 'Rival'], ['cancha', 'Cancha']].map(([id, l]) =>
+      `<button class="tab" role="tab" id="tab-${id}" aria-controls="setPanel" tabindex="${t === id ? 0 : -1}" data-k="tab-${id}" data-tab="${id}" aria-selected="${t === id}">${l}</button>`).join('')}</div>
+    <div role="tabpanel" id="setPanel" aria-labelledby="tab-${t}">${body}</div>`;
+  if (focusKey) c.querySelector(`[data-k="${focusKey}"]`)?.focus();
+  // pestañas con flechas, Inicio y Fin (patrón ARIA de pestañas, activación automática)
+  c.onkeydown = e => {
+    if (!e.target.matches('.tab')) return;
+    const ids = ['jugadas', 'mine', 'rival', 'cancha'], i = ids.indexOf(setupTab);
+    const j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: ids.length - 1 }[e.key];
+    if (j === undefined) return;
+    e.preventDefault();
+    setupTab = ids[(j + ids.length) % ids.length]; renderSetup();
+    c.querySelector(`#tab-${setupTab}`).focus();
+  };
+  c.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const d = b.dataset;
+    if (b.id === 'bDone' || b.id === 'bGrab') closeSetup();
+    else if (d.play) { swapSheet(() => { sheetView = 'result'; goToPlay(d.play); renderSheet(); }); }
+    else if (d.tab) { setupTab = d.tab; renderSetup(); }
+    else if (d.surface) { setSurface(d.surface); renderSetup(); }
+    else if (d.style || d.base || d.ring) {
+      const k = kits[t];
+      if (d.style) k.style = d.style; if (d.base) k.base = d.base; if (d.ring) k.ring = d.ring;
+      applyKits(); renderKits(); renderZones(); renderSetup();
+    } else if (d.int) {
+      pushHistory();
+      for (const p of state.players) if (p.team === t) p.intensity = +d.int;
+      changed(false);
+    }
+  };
+}
 
 /* =========================================================
    Interacción
@@ -1513,13 +1745,14 @@ function dismissHint() {
 svg.addEventListener('pointerdown', e => {
   if (playback || drag) return;            // un solo dedo: ignora toques extra durante el arrastre
   dismissHint();
+  finishSlide(true);                        // tocar durante un cambio de jugada lo completa al instante
   const hit = e.target.closest('[data-hit]');
   const w = toWorld(e);
   drag = { kind: hit?.dataset.hit || 'grass', id: hit?.dataset.id, cx: e.clientX, cy: e.clientY, moved: false, before: JSON.stringify(state), w0: w, pid: e.pointerId };
   if (drag.kind === 'ball' && state.ball.ownerId && !picking) { drag.kind = 'player'; drag.id = state.ball.ownerId; drag.fromBall = true; }
   if (drag.kind === 'player' && !picking) {
     const p = byId(state, drag.id); drag.off = V.sub(p.pos, w);
-    nodes[p.id].g.classList.add('lift'); setLift(p.id, 1);
+    nodes[p.id].g.classList.add('lift');
   }
   svg.setPointerCapture(e.pointerId);
   e.preventDefault();
@@ -1557,7 +1790,7 @@ function liveUpdate() {
 function endDrag(e) {
   if (!drag || (e && e.pointerId !== drag.pid)) return;
   const d = drag; drag = null;
-  if (d.kind === 'player' && d.id && nodes[d.id]) { nodes[d.id].g.classList.remove('lift'); setLift(d.id, 0); }
+  if (d.kind === 'player' && d.id && nodes[d.id]) { nodes[d.id].g.classList.remove('lift'); }
   if (d.moved) {
     if (JSON.stringify(state) !== d.before) { history.push(d.before); if (history.length > 30) history.shift(); }
     changed(true);
@@ -1598,25 +1831,51 @@ function endDrag(e) {
 svg.addEventListener('pointerup', endDrag);
 svg.addEventListener('pointercancel', e => {
   if (!drag || e.pointerId !== drag.pid) return;
-  if (drag.id && nodes[drag.id]) { nodes[drag.id].g.classList.remove('lift'); setLift(drag.id, 0); }
+  if (drag.id && nodes[drag.id]) { nodes[drag.id].g.classList.remove('lift'); }
   state = JSON.parse(drag.before); drag = null; buildPlayers(); changed(false);
 });
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
+  if (e.key === 'Escape' && sheetView === 'setup' && !picking) closeSetup();
   if (e.key === 'Escape' && picking) { picking = false; $('#stage').classList.remove('picking'); renderBall(ballDrawPos(state), false); }
 });
 $('#hintOk').onclick = dismissHint;
 addEventListener('resize', () => { measurePeek(); });
 
 /* =========================================================
-   Reproducción ("Animar"): exposición larga de la jugada
+   Reproducción ("Animar"): colas de cometa sobre la cancha a media luz
    ========================================================= */
 let playback = null;
-const TRAIL = { mine: ['#d8263b', '#ff7b88'], mineGk: ['#6d4dff', '#b3a2ff'], rival: ['#2f97da', '#b2e1ff'], rivalGk: ['#9cc72a', '#e6ff8c'] };
-function trailColors(p) { return p.team === 'mine' ? (p.gk ? TRAIL.mineGk : TRAIL.mine) : (p.gk ? TRAIL.rivalGk : TRAIL.rival); }
+/* Cola de cometa: cada jugador arrastra solo su último tramo (0,8 s; la pelota 0,45 s), partido en trozos que se afinan
+   y se apagan hacia atrás. Quien corre más deja la cola más larga; quien se para, la recoge. */
+const COMET = { players: 0.8, ball: 0.45, pieces: 10 };
+function trailColors(p) { const c = p.gk ? GK_COLOR[p.team] : teamGlow(p.team); return [c, mix(c, '#ffffff', 0.55)]; }
+function makeComet(parent, glow, core, wGlow, wCore) {
+  const g = el('g', {}, parent), segs = [];
+  for (let i = 0; i < COMET.pieces; i++) {
+    const u = (i + 1) / COMET.pieces, fade = u * u;
+    segs.push([
+      el('polyline', { fill: 'none', stroke: glow, 'stroke-width': (wGlow * (0.25 + 0.75 * u)).toFixed(3), 'stroke-linejoin': 'round', opacity: (0.5 * fade).toFixed(3) }, g),
+      el('polyline', { fill: 'none', stroke: core, 'stroke-width': (wCore * (0.2 + 0.8 * u)).toFixed(3), 'stroke-linejoin': 'round', opacity: (0.95 * fade).toFixed(3) }, g),
+    ]);
+  }
+  return segs;
+}
+// pts: de la cola a la cabeza. Cada trozo comparte su primer punto con el anterior para que no queden huecos.
+function drawComet(segs, pts) {
+  const n = pts.length, P = segs.length;
+  for (let i = 0; i < P; i++) {
+    const a = Math.floor(i * (n - 1) / P), b = Math.max(a + 1, Math.floor((i + 1) * (n - 1) / P));
+    const s = n > 1 ? pts.slice(a, Math.min(n, b + 1)).join(' ') : '';
+    segs[i][0].setAttribute('points', s); segs[i][1].setAttribute('points', s);
+  }
+}
 function startPlayback() {
   if (!result) return;
   if (picking) { picking = false; $('#stage').classList.remove('picking'); }
+  finishSlide(true);
+  cancelAnimationFrame(pending); cancelAnimationFrame(liveRaf);   // un recálculo pendiente no debe pisar la hoja de la repetición
+  result = analyze(state);
   const sim = simulate(clone(state), result);
   playback = { sim, t: 0, playing: true, rate: 1, last: performance.now(), lastEv: -1 };
   $('#rec').innerHTML = ''; $('#marks').innerHTML = ''; $('#zones').innerHTML = ''; geo = null;
@@ -1624,17 +1883,9 @@ function startPlayback() {
   playback.trails = {};
   for (const id of sim.order) {
     const [glow, core] = trailColors(byId(state, id));
-    const g = el('g', {}, ex);
-    playback.trails[id] = [
-      el('polyline', { fill: 'none', stroke: glow, 'stroke-width': 0.7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0.34 }, g),
-      el('polyline', { fill: 'none', stroke: core, 'stroke-width': 0.13, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0.9 }, g),
-    ];
+    playback.trails[id] = makeComet(ex, glow, core, 0.95, 0.21);
   }
-  const gb = el('g', {}, ex);
-  playback.ballTrail = [
-    el('polyline', { fill: 'none', stroke: '#fff3c8', 'stroke-width': 0.55, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0.22 }, gb),
-    el('polyline', { fill: 'none', stroke: '#fffdf2', 'stroke-width': 0.1, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0.95 }, gb),
-  ];
+  playback.ballTrail = makeComet(ex, '#fff3c8', '#fffdf2', 0.6, 0.15);
   playback.passLine = el('path', { fill: 'none', stroke: 'rgba(255,255,255,.85)', 'stroke-width': 0.2, 'stroke-linecap': 'round', 'stroke-dasharray': '0 .45', class: reduceMotion.matches ? '' : 'roll' }, $('#rec'));
   $('#coneL').innerHTML = '';
   playback.cone = buildCone($('#coneL'), '');
@@ -1669,21 +1920,22 @@ function drawPlaybackFrame() {
   let bx = f.b[0], by = f.b[1];
   if (f.owner) { const k = pb.sim.order.indexOf(f.owner), o = f.P[k]; bx = o[0] + (bx - o[0]) * 1.75; by = o[1] + (by - o[1]) * 1.75; }
   renderBall({ x: bx, y: by }, false);
-  // exposición larga: todo el recorrido desde el inicio queda grabado en la cancha
+  // cola de cometa: solo el último tramo, que se desvanece hacia atrás
+  const from = n => Math.max(0, i - Math.round(n / CONFIG.sim.dt));
+  const xy = (x, y) => `${x.toFixed(2)},${SY(y).toFixed(2)}`;
   pb.sim.order.forEach((id, k) => {
     const pts = [];
-    for (let j = 0; j <= i; j += 2) pts.push(`${fr[j].P[k][0].toFixed(2)},${SY(fr[j].P[k][1]).toFixed(2)}`);
-    pts.push(`${f.P[k][0].toFixed(2)},${SY(f.P[k][1]).toFixed(2)}`);
-    const s = pts.join(' ');
-    pb.trails[id][0].setAttribute('points', s); pb.trails[id][1].setAttribute('points', s);
+    for (let j = from(COMET.players); j <= i; j++) pts.push(xy(fr[j].P[k][0], fr[j].P[k][1]));
+    pts.push(xy(f.P[k][0], f.P[k][1]));
+    drawComet(pb.trails[id], pts);
   });
   const bpts = [];
-  for (let j = 0; j <= i; j += 2) bpts.push(`${fr[j].b[0].toFixed(2)},${SY(fr[j].b[1]).toFixed(2)}`);
-  const bs = bpts.join(' ');
-  pb.ballTrail.forEach(l => l.setAttribute('points', bs));
+  for (let j = from(COMET.ball); j <= i; j++) bpts.push(xy(fr[j].b[0], fr[j].b[1]));
+  bpts.push(xy(f.b[0], f.b[1]));
+  drawComet(pb.ballTrail, bpts);
   if (f.fl) { pb.passLine.setAttribute('d', `M${pt(f.fl.from)} L${pt(f.fl.to)}`); pb.passLine.style.display = ''; }
   else pb.passLine.style.display = 'none';
-  if (f.meT) { pb.cone.g.style.display = ''; pb.cone.g.setAttribute('transform', `translate(${f.meT.x.toFixed(3)} ${SY(f.meT.y).toFixed(3)})`); placeShadowsLocal(pb.cone.shadows, f.meT, 0.62); }
+  if (f.meT) { pb.cone.g.style.display = ''; pb.cone.g.setAttribute('transform', `translate(${f.meT.x.toFixed(3)} ${SY(f.meT.y).toFixed(3)})`); }
   else pb.cone.g.style.display = 'none';
   const evIdx = pb.sim.events.reduce((k, e, j) => (e.t <= pb.t + 1e-6 ? j : k), 0);
   $('#clock').textContent = '+' + fmt(pb.t);
@@ -1712,7 +1964,7 @@ function renderPlaybackSheet() {
     <div class="acts">
       <button class="go" id="bPP"></button>
       <button class="txt" id="bSlow" aria-pressed="false">½×</button>
-      <button class="txt" id="bAdopt">Seguir desde aquí</button>
+      <button class="txt" id="bAdopt" title="Seguir la jugada desde este momento" aria-label="Seguir la jugada desde este momento">Desde aquí</button>
       <button class="sq" id="bBack" aria-label="Volver a la jugada" title="Volver a la jugada">${icon('undo')}</button>
     </div>
     <button class="morebtn" id="bMore" aria-expanded="${sheetOpen}">${icon('caret')}${sheetOpen ? 'Menos' : 'La secuencia'}</button>
@@ -1759,6 +2011,7 @@ function stopPlayback() {
    ========================================================= */
 drawField();
 buildPlayers();
+applyKits();
 try { if (localStorage.getItem('pambol.hint')) $('#hint').classList.add('gone'); } catch (e) { /* sin almacenamiento */ }
 if (!reduceMotion.matches) {
   Object.values(nodes).forEach(n => { if (n && n.body) { n.body.classList.add('dropin'); n.body.style.animationDelay = (120 + n.i * 35) + 'ms'; } });

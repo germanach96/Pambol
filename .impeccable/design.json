@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T23:59:30Z",
+  "title": "Pambol: diseño visual",
+  "extensions": {
+    "colorMeta": {
+      "night": {
+        "role": "neutral",
+        "displayName": "Noche teñida",
+        "canonical": "#0a0a0c"
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Hoja (material)",
+        "canonical": "rgba(30,30,32,.72)",
+        "tonalRamp": [
+          "#0a0a0c",
+          "#1e1e20",
+          "#2c2c2e",
+          "#5b5b60"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Etiquetas",
+        "canonical": "#f5f5f7",
+        "tonalRamp": [
+          "rgba(235,235,245,.56)",
+          "rgba(235,235,245,.7)",
+          "#f5f5f7"
+        ]
+      },
+      "cone": {
+        "role": "primary",
+        "displayName": "Naranja del sistema",
+        "canonical": "#ff9f0a",
+        "tonalRamp": [
+          "#1f1300",
+          "#d97a00",
+          "#ff9f0a",
+          "#ffb340",
+          "#ffc68a"
+        ]
+      },
+      "miss": {
+        "role": "tertiary",
+        "displayName": "Evita",
+        "canonical": "#ff453a"
+      },
+      "turf": {
+        "role": "neutral",
+        "displayName": "Superficies de la cancha",
+        "canonical": "#2a743b",
+        "tonalRamp": [
+          "#1f4570",
+          "#2d6299",
+          "#6c7075",
+          "#97653a",
+          "#a06c3b",
+          "#a87444",
+          "#935739",
+          "#9a5b3c",
+          "#276d37",
+          "#2a743b",
+          "#2a8141",
+          "#2e8c47"
+        ]
+      },
+      "kit-palette": {
+        "role": "secondary",
+        "displayName": "Equipaciones",
+        "canonical": "#d8263b",
+        "tonalRamp": [
+          "#1c1f22",
+          "#7d1d2f",
+          "#1f3f8f",
+          "#1f8a4c",
+          "#d8263b",
+          "#f07a1a",
+          "#ec6fa6",
+          "#5cb8ec",
+          "#f2c94c",
+          "#f3efe6"
+        ]
+      },
+      "goalkeepers": {
+        "role": "secondary",
+        "displayName": "Porteros",
+        "canonical": "#6d4dff",
+        "tonalRamp": [
+          "#6d4dff",
+          "#c6ef3f"
+        ]
+      },
+      "fill": {
+        "role": "neutral",
+        "displayName": "Relleno de iOS",
+        "canonical": "rgba(118,118,128,.24)",
+        "tonalRamp": [
+          "rgba(118,118,128,.14)",
+          "rgba(118,118,128,.18)",
+          "rgba(118,118,128,.24)",
+          "rgba(118,118,128,.42)"
+        ]
+      },
+      "team-tint": {
+        "role": "secondary",
+        "displayName": "Tinte de equipos",
+        "canonical": "#d8263b",
+        "tonalRamp": [
+          "#5cb8ec",
+          "#d8263b"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "SF Pro Rounded 700 a 800",
+        "purpose": "Marca pambol, cifra grande, reloj de la repetición, dorsales."
+      },
+      "title": {
+        "displayName": "SF Pro Text 700",
+        "purpose": "Títulos de la hoja (23 px, 26 px en escritorio)."
+      },
+      "body": {
+        "displayName": "SF Pro Text 400 a 600",
+        "purpose": "Todo lo demás, en minúscula de oración."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet",
+        "value": "inset 0 .5px 0 rgba(255,255,255,.14), 0 -12px 40px rgba(0,0,0,.3)",
+        "purpose": "Hoja inferior translúcida sobre la cancha."
+      },
+      {
+        "name": "sheet-desktop",
+        "value": "inset 0 .5px 0 rgba(255,255,255,.14), 0 24px 60px rgba(0,0,0,.35)",
+        "purpose": "Hoja flotante en escritorio."
+      },
+      {
+        "name": "hint",
+        "value": "inset 0 .5px 0 rgba(255,255,255,.14), 0 10px 30px rgba(0,0,0,.3)",
+        "purpose": "Aviso flotante."
+      },
+      {
+        "name": "segment-thumb",
+        "value": "0 3px 8px rgba(0,0,0,.12), 0 3px 1px rgba(0,0,0,.04)",
+        "purpose": "Pastilla elevada del control segmentado."
+      },
+      {
+        "name": "material",
+        "value": "backdrop-filter: blur(30px) saturate(180%)",
+        "purpose": "Hoja, aviso y toasts; sólido con prefers-reduced-transparency."
+      }
+    ],
+    "motion": [
+      {
+        "name": "team-tint",
+        "value": "500ms ease sobre --mine y --rival (@property)",
+        "purpose": "El fondo cambia de tinte al cambiar una equipación."
+      },
+      {
+        "name": "surface-fade",
+        "value": "240ms ease (260 ms en la entrada)",
+        "purpose": "La superficie nueva entra fundiéndose sobre la anterior; la elección se guarda en localStorage (pambol.surface)."
+      },
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23,1,0.32,1)",
+        "purpose": "Estados, levantar ficha, fundidos."
+      },
+      {
+        "name": "ease-drawer",
+        "value": "cubic-bezier(0.32,0.72,0,1)",
+        "purpose": "La hoja crece desde abajo (300 ms)."
+      },
+      {
+        "name": "ease-drop",
+        "value": "cubic-bezier(0.34,1.36,0.64,1)",
+        "purpose": "Soltar ficha (260 ms) y caer el cono (300 ms)."
+      },
+      {
+        "name": "play-spring",
+        "value": "muelle críticamente amortiguado, respuesta 0,4 s",
+        "purpose": "Cambio de jugada, interrumpible conservando velocidad."
+      },
+      {
+        "name": "comet",
+        "value": "0,8 s jugadores, 0,45 s pelota, 10 trozos",
+        "purpose": "Colas de la repetición."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "desktop",
+        "value": "960px"
+      },
+      {
+        "name": "narrow",
+        "value": "400px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Animar",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Única acción principal, en naranja del sistema.",
+      "html": "<button class=\"ds-go\">Animar</button>",
+      "css": ".ds-go { height: 50px; padding: 0 28px; border: 0; border-radius: 12px; background: #ff9f0a; color: #1f1300; font: 600 17px/1 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; letter-spacing: -.02em; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms ease; } .ds-go:hover { background: #ffb340; } .ds-go:active { transform: scale(.97); } .ds-go:focus-visible { outline: 2px solid #ff9f0a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botón de ícono",
+      "kind": "button",
+      "refersTo": "button-icon",
+      "description": "Zonas, deshacer, volver, jugadas y equipos, sobre relleno de iOS.",
+      "html": "<button class=\"ds-sq\" aria-label=\"Jugadas y equipos\"><svg viewBox=\"0 0 256 256\" width=\"18\" height=\"18\" fill=\"currentColor\"><path d=\"M40,92H70.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24H137.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24Zm64-24A12,12,0,1,1,92,80,12,12,0,0,1,104,68Zm112,96H201.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24h94.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24Zm-48,24a12,12,0,1,1,12-12A12,12,0,0,1,168,188Z\"/></svg></button>",
+      "css": ".ds-sq { width: 50px; height: 50px; border: 0; border-radius: 12px; background: rgba(118,118,128,.24); color: #f5f5f7; display: grid; place-items: center; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms ease, color 160ms ease; } .ds-sq:hover { background: rgba(118,118,128,.42); } .ds-sq:active { transform: scale(.95); } .ds-sq[aria-pressed=true] { background: rgba(118,118,128,.42); color: #ffb340; } .ds-sq:focus-visible { outline: 2px solid #ff9f0a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Control segmentado",
+      "kind": "chip",
+      "refersTo": "segmented",
+      "description": "Pestañas de Ajustes (solo texto: Jugadas, Mi equipo, Rival, Cancha), estilo de camiseta e intensidad: pista gris y pastilla elevada.",
+      "html": "<div class=\"ds-seg\"><button aria-pressed=\"true\">Jugadas</button><button aria-pressed=\"false\">Mi equipo</button><button aria-pressed=\"false\">Rival</button><button aria-pressed=\"false\">Cancha</button></div>",
+      "css": ".ds-seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0,1fr); gap: 2px; padding: 2px; border-radius: 11px; background: rgba(118,118,128,.24); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; } .ds-seg button { height: 34px; border: 0; border-radius: 9px; background: none; font-size: 14px; font-weight: 500; color: #f5f5f7; transition: background-color 200ms ease, box-shadow 200ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-seg button:not([aria-pressed=true]):hover { background: rgba(118,118,128,.18); } .ds-seg button:active { transform: scale(.96); } .ds-seg button[aria-pressed=true] { background: #5b5b60; font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.12), 0 3px 1px rgba(0,0,0,.04); } .ds-seg button:focus-visible { outline: 2px solid #ff9f0a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Lista agrupada de jugadas",
+      "kind": "card",
+      "refersTo": "plays",
+      "description": "Filas de 48 px con separadores finos que empiezan a 16 px; la elegida en naranja.",
+      "html": "<ul class=\"ds-plays\"><li><button class=\"ds-play\" aria-pressed=\"true\"><b>Sin balón</b><span>5 contra 5</span></button></li><li><button class=\"ds-play\"><b>Salida</b><span>3 s</span></button></li></ul>",
+      "css": ".ds-plays { list-style: none; margin: 0; padding: 0; border-radius: 12px; background: rgba(118,118,128,.24); overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; } .ds-plays li + li .ds-play::before { content: ''; position: absolute; left: 16px; right: 0; top: 0; border-top: .5px solid rgba(84,84,88,.6); } .ds-play { position: relative; width: 100%; min-height: 48px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border: 0; background: none; text-align: left; transition: background-color 160ms ease; } .ds-play:hover { background: rgba(118,118,128,.14); } .ds-play:active { background: rgba(118,118,128,.42); } .ds-play b { font-weight: 400; font-size: 16px; color: #f5f5f7; } .ds-play span { margin-left: auto; font-size: 15px; color: rgba(235,235,245,.56); } .ds-play[aria-pressed=true] b { color: #ffb340; font-weight: 600; } .ds-play:focus-visible { outline: 2px solid #ff9f0a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Camiseta",
+      "kind": "custom",
+      "refersTo": "kit",
+      "description": "Ficha plana con estilo, aro de contorno y dorsal de tinta por contraste.",
+      "html": "<button class=\"ds-kit\" aria-pressed=\"true\">7</button>",
+      "css": ".ds-kit { width: 38px; height: 38px; border: 0; border-radius: 50%; display: grid; place-items: center; font: 700 15px/1 ui-rounded, 'SF Pro Rounded', system-ui, sans-serif; letter-spacing: -.02em; color: #fff; text-shadow: 0 0 2px rgba(40,4,10,.7); background: linear-gradient(90deg,#f3efe6 0 8.33%,#d8263b 8.33% 25%,#f3efe6 25% 41.67%,#d8263b 41.67% 58.33%,#f3efe6 58.33% 75%,#d8263b 75% 91.67%,#f3efe6 91.67%); box-shadow: inset 0 0 0 3px #f3efe6, inset 0 0 0 4px rgba(0,0,0,.25); transition: transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-kit:hover { transform: scale(1.06); } .ds-kit:active { transform: scale(.94); } .ds-kit[aria-pressed=true] { box-shadow: inset 0 0 0 3px #f3efe6, inset 0 0 0 4px rgba(0,0,0,.25), 0 0 0 2px #0a0a0c, 0 0 0 4px #ff9f0a; }"
+    },
+    {
+      "name": "Muestra de color",
+      "kind": "chip",
+      "refersTo": "swatch",
+      "description": "Una de las 10 muestras de base o contorno, en rejilla de 5 × 2.",
+      "html": "<button class=\"ds-sw\" aria-pressed=\"true\"><i style=\"background:#5cb8ec\"></i></button>",
+      "css": ".ds-sw { width: 44px; height: 44px; border: 0; background: none; border-radius: 50%; display: grid; place-items: center; transition: transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-sw i { width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 .5px rgba(255,255,255,.2); transition: box-shadow 160ms ease; } .ds-sw:hover { transform: scale(1.06); } .ds-sw:active { transform: scale(.92); } .ds-sw[aria-pressed=true] i { box-shadow: 0 0 0 2.5px #1e1e20, 0 0 0 4.5px #f5f5f7; }"
+    },
+    {
+      "name": "Muestra de superficie",
+      "kind": "chip",
+      "refersTo": "surface",
+      "description": "Una de las seis superficies de la pestaña Cancha, en rejilla de 3 × 2.",
+      "html": "<button class=\"ds-surf\" aria-pressed=\"true\"><i style=\"background:repeating-linear-gradient(180deg,#2a743b 0 10px,#276d37 10px 20px)\"></i>Césped</button>",
+      "css": ".ds-surf { width: 112px; display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 6px 6px 9px; border: 0; border-radius: 12px; background: rgba(118,118,128,.24); font: 500 13px/1.2 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; color: #f5f5f7; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), box-shadow 160ms ease; } .ds-surf i { height: 46px; border-radius: 7px; box-shadow: inset 0 0 0 .5px rgba(255,255,255,.18); } .ds-surf:active { transform: scale(.97); } .ds-surf[aria-pressed=true] { box-shadow: inset 0 0 0 2px #f5f5f7; font-weight: 600; } .ds-surf:focus-visible { outline: 2px solid #ff9f0a; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Fut 5 de noche, como app de Apple",
+    "overview": "Una cancha plana, sin luz simulada y de superficie elegible, presentada como una tarjeta de esquinas redondeadas sobre una noche que se tiñe con los colores de los dos equipos. Alrededor, el lenguaje de iOS en modo oscuro: tipografía del sistema, materiales translúcidos, controles segmentados y listas agrupadas. La app no se disfraza de herramienta: la cancha es la interfaz.",
+    "keyCharacteristics": [
+      "Huellas de tachones y cono",
+      "Colas de cometa en la repetición",
+      "Equipaciones configurables por equipo",
+      "Seis superficies planas: césped, sintético, tierra, concreto, madera y pista azul",
+      "Fondo teñido por los colores de los dos equipos",
+      "Flechas ligeras: el largo es la velocidad",
+      "Un solo acento: naranja del sistema"
+    ],
+    "rules": [],
+    "dos": [],
+    "donts": []
+  }
+}
